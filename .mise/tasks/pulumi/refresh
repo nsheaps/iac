@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Run pulumi refresh (sync state with actual infrastructure)"
+#MISE usage="refresh [--stack <stack>]"
+set -euo pipefail
+
+exec "$(git rev-parse --show-toplevel)/bin/pulumi-wrapper.sh" refresh "$@"

@@ -1,0 +1,45 @@
+name: pulumi-deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "github-org/**"
+      - ".github/workflows/pulumi-deploy.yaml"
+      - "bin/pulumi-wrapper.sh"
+
+concurrency:
+  group: pulumi-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Pulumi Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load secrets from 1Password
+        id: secrets
+        uses: 1password/load-secrets-action@v2
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
+          GITHUB_TOKEN: op://Infrastructure/github-org-pulumi/token
+          PULUMI_CONFIG_PASSPHRASE: op://Infrastructure/pulumi-backend/passphrase
+          # Uncomment when R2 backend is provisioned:
+          # AWS_ACCESS_KEY_ID: op://Infrastructure/pulumi-r2-backend/access-key-id
+          # AWS_SECRET_ACCESS_KEY: op://Infrastructure/pulumi-r2-backend/secret-access-key
+
+      - uses: pulumi/actions@v6
+        with:
+          command: up
+          stack-name: prod
+          work-dir: github-org
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: ${{ env.PULUMI_CONFIG_PASSPHRASE }}
+          # Uses file:// backend by default. When R2 credentials are set,
+          # set PULUMI_BACKEND_URL to switch to R2 automatically.
+          # PULUMI_BACKEND_URL: s3://nsheaps-pulumi-state?endpoint=...
