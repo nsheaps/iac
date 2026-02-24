@@ -26,11 +26,11 @@ jobs:
         uses: 1password/load-secrets-action@v2
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
-          GITHUB_TOKEN: op://VAULT_NAME/github-org-pulumi/token
-          PULUMI_CONFIG_PASSPHRASE: op://VAULT_NAME/pulumi-backend/passphrase
+          GITHUB_TOKEN: op://Infrastructure/github-org-pulumi/token
+          PULUMI_CONFIG_PASSPHRASE: op://Infrastructure/pulumi-backend/passphrase
           # Uncomment when R2 backend is provisioned:
-          # AWS_ACCESS_KEY_ID: op://VAULT_NAME/pulumi-r2-backend/access-key-id
-          # AWS_SECRET_ACCESS_KEY: op://VAULT_NAME/pulumi-r2-backend/secret-access-key
+          # AWS_ACCESS_KEY_ID: op://Infrastructure/pulumi-r2-backend/access-key-id
+          # AWS_SECRET_ACCESS_KEY: op://Infrastructure/pulumi-r2-backend/secret-access-key
 
       - uses: pulumi/actions@v6
         with:

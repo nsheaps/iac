@@ -20,7 +20,9 @@ PROJECT_DIR="${REPO_ROOT}/github-org"
 ENV_FILE="${PROJECT_DIR}/.env.op"
 
 # R2 configuration
-R2_ENDPOINT="${PULUMI_R2_ENDPOINT:-https://ACCOUNT_ID.r2.cloudflarestorage.com}"
+# IMPORTANT: Replace YOUR_ACCOUNT_ID with your Cloudflare account ID before using R2 backend.
+# Find it at: https://dash.cloudflare.com/ → any zone → Overview → right sidebar → Account ID.
+R2_ENDPOINT="${PULUMI_R2_ENDPOINT:-}"
 R2_BUCKET="${PULUMI_R2_BUCKET:-nsheaps-pulumi-state}"
 R2_BACKEND_URL="s3://${R2_BUCKET}?endpoint=${R2_ENDPOINT}&disableSSL=false&s3ForcePathStyle=true"
 
@@ -31,9 +33,9 @@ detect_backend() {
     return
   fi
 
-  # Try to detect R2 credentials
-  if [[ -n "${AWS_ACCESS_KEY_ID:-}" ]] && [[ -n "${AWS_SECRET_ACCESS_KEY:-}" ]]; then
-    # R2 credentials available (either from op run or CI env)
+  # Try to detect R2 credentials — requires both creds AND a configured endpoint
+  if [[ -n "${AWS_ACCESS_KEY_ID:-}" ]] && [[ -n "${AWS_SECRET_ACCESS_KEY:-}" ]] && [[ -n "${R2_ENDPOINT}" ]]; then
+    # R2 credentials and endpoint available (either from op run or CI env)
     export PULUMI_BACKEND_URL="${R2_BACKEND_URL}"
     echo "Auto-detected R2 backend: s3://${R2_BUCKET}" >&2
     return

@@ -39,7 +39,7 @@ resources:
       enforceAdmins: false
       requiredPullRequestReviews:
         - dismissStaleReviews: true
-          requiredApprovingReviewCount: 0
+          requiredApprovingReviewCount: 1
       requiredStatusChecks:
         - strict: true
           contexts:

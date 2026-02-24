@@ -113,7 +113,31 @@ The wrapper script (`bin/pulumi-wrapper.sh`) auto-detects the backend:
 2. **If R2 credentials are available** — uses the Cloudflare R2 bucket
 3. **Otherwise** — falls back to `file://` local state in `.pulumi-state/`
 
-Local state is fine for getting started. The R2 backend will activate automatically once credentials are configured.
+Local state is fine for getting started. The R2 backend will activate automatically once credentials and endpoint are configured.
+
+### Bootstrapping the Prod Stack
+
+When setting up from scratch (new clone, no existing state):
+
+```bash
+# 1. Install tools
+mise install
+
+# 2. Authenticate with 1Password
+op signin
+
+# 3. Initialize the prod stack (creates Pulumi.prod.yaml if missing)
+mise run pulumi:stack-init prod
+
+# 4. Preview to verify everything resolves
+mise run pulumi:preview --stack prod
+
+# 5. If managing existing resources, import them first (see "Importing Existing Resources")
+#    Then run apply:
+mise run pulumi:up --stack prod
+```
+
+> **Note:** The first `pulumi up` on a fresh stack will attempt to **create** all declared resources. If the resources already exist in GitHub, you must **import** them first to avoid conflicts. See [Importing Existing Resources](#importing-existing-resources).
 
 ## Secrets
 
