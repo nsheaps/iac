@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Run pulumi up (apply changes)"
+#MISE usage="up [--stack <stack>] [--yes]"
+set -euo pipefail
+
+exec "$(git rev-parse --show-toplevel)/bin/pulumi-wrapper.sh" up "$@"

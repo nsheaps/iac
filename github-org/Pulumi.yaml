@@ -1,0 +1,83 @@
+name: github-org
+runtime: yaml
+description: GitHub organization infrastructure for nsheaps
+
+config:
+  github-owner:
+    type: string
+    default: nsheaps
+
+resources:
+  # ---------------------------------------------------------------------------
+  # Repositories
+  # ---------------------------------------------------------------------------
+  iac-repo:
+    type: github:Repository
+    properties:
+      name: iac
+      description: "Infrastructure as Code — Portainer stacks + Pulumi GitHub org management"
+      visibility: public
+      hasIssues: true
+      hasProjects: false
+      hasWiki: false
+      allowMergeCommit: false
+      allowSquashMerge: true
+      allowRebaseMerge: true
+      deleteBranchOnMerge: true
+      vulnerabilityAlerts: true
+
+  # ---------------------------------------------------------------------------
+  # Branch Protection
+  # ---------------------------------------------------------------------------
+  iac-main-protection:
+    type: github:BranchProtection
+    properties:
+      # BranchProtection (v4/GraphQL) requires the repo's GraphQL node ID,
+      # NOT the repo name. This is a common gotcha — use nodeId, not name.
+      repositoryId: ${iac-repo.nodeId}
+      pattern: main
+      enforceAdmins: false
+      requiredPullRequestReviews:
+        - dismissStaleReviews: true
+          requiredApprovingReviewCount: 0
+      requiredStatusChecks:
+        - strict: true
+          contexts:
+            - "check"
+
+  # ---------------------------------------------------------------------------
+  # Teams
+  # ---------------------------------------------------------------------------
+  bots-team:
+    type: github:Team
+    properties:
+      name: bots
+      description: "Bot accounts and automation service accounts"
+      privacy: closed
+
+  bots-iac-access:
+    type: github:TeamRepository
+    properties:
+      teamId: ${bots-team.id}
+      repository: ${iac-repo.name}
+      permission: push
+
+  # ---------------------------------------------------------------------------
+  # App Installation — repo access for the automation GitHub App
+  # ---------------------------------------------------------------------------
+  # NOTE: GitHub Apps themselves cannot be created/managed via Pulumi.
+  # This resource controls which repos the app installation has access to.
+  # Uncomment and fill in the installationId once you have it.
+  #
+  # To find the installation ID:
+  #   gh api /orgs/nsheaps/installations --jq '.[].id'
+  #
+  # automation-app-iac-access:
+  #   type: github:AppInstallationRepository
+  #   properties:
+  #     installationId: "REPLACE_WITH_INSTALLATION_ID"
+  #     repository: ${iac-repo.name}
+
+outputs:
+  iacRepoUrl: ${iac-repo.htmlUrl}
+  botsTeamId: ${bots-team.id}

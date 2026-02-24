@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Initialize a new Pulumi stack"
+#MISE usage="stack-init <stack-name>"
+set -euo pipefail
+
+exec "$(git rev-parse --show-toplevel)/bin/pulumi-wrapper.sh" stack init "$@"

@@ -1,0 +1,47 @@
+name: pulumi-preview
+
+on:
+  pull_request:
+    paths:
+      - "github-org/**"
+      - ".github/workflows/pulumi-*.yaml"
+      - "bin/pulumi-wrapper.sh"
+
+concurrency:
+  group: pulumi-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    name: Pulumi Preview
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load secrets from 1Password
+        id: secrets
+        uses: 1password/load-secrets-action@v2
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
+          GITHUB_TOKEN: op://VAULT_NAME/github-org-pulumi/token
+          PULUMI_CONFIG_PASSPHRASE: op://VAULT_NAME/pulumi-backend/passphrase
+          # Uncomment when R2 backend is provisioned:
+          # AWS_ACCESS_KEY_ID: op://VAULT_NAME/pulumi-r2-backend/access-key-id
+          # AWS_SECRET_ACCESS_KEY: op://VAULT_NAME/pulumi-r2-backend/secret-access-key
+
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          work-dir: github-org
+          comment-on-pr: true
+          comment-on-summary: true
+        env:
+          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: ${{ env.PULUMI_CONFIG_PASSPHRASE }}
+          # Uses file:// backend by default. When R2 credentials are set,
+          # set PULUMI_BACKEND_URL to switch to R2 automatically.
+          # PULUMI_BACKEND_URL: s3://nsheaps-pulumi-state?endpoint=...

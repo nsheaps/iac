@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Run pulumi destroy (tear down all resources)"
+#MISE usage="destroy [--stack <stack>] [--yes]"
+set -euo pipefail
+
+exec "$(git rev-parse --show-toplevel)/bin/pulumi-wrapper.sh" destroy "$@"
