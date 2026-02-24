@@ -1,8 +1,8 @@
 {
-  "name": "@nsheaps/portainer-stacks",
+  "name": "@nsheaps/iac",
   "version": "1.0.0",
   "nx": {},
-  "description": "A project used for syncing with a Portainer instance to update containers remotely.",
+  "description": "Infrastructure as Code — Portainer stacks + Pulumi GitHub org management",
   "scripts": {
     "check": "bash -c '[ \"${CI:-false}\" = \"false\" ] && { exec yarn run check:fix \"$@\" ; } || { exec yarn run check:ci \"$@\" ; }'",
     "check:ci": "nx run-many --target check:prettier --target check:docker",

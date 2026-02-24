@@ -22,3 +22,8 @@ Thumbs.db
 # nx
 .nx
 **/.env
+
+# Pulumi
+**/.pulumi/
+**/Pulumi.*.yaml.bak
+/.pulumi-state/

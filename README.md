@@ -1,14 +1,16 @@
-# portainer-stacks
+# iac
 
-Portainer-stacks is a project used for syncing with a Portainer instance to update containers remotely.
+Infrastructure as Code for the nsheaps organization. Manages both container deployments (Docker Compose / Portainer) and GitHub organization resources (Pulumi).
 
-## How-to
+## Infrastructure Managed
 
-In `hosts/`, each folder relates to a specific host. Within that is one or more docker-compose files for containers deployed to those hosts via [portainer](github.com/portainer/portainer).
+### Docker Compose / Portainer (`hosts/`)
 
-For validation purposes, each compose file must end in `-compose.yaml` or `-compose.yml`, otherwise docker will not be able to properly parse that yaml file.
+Container stacks deployed to hosts via [Portainer](https://github.com/portainer/portainer). Each folder in `hosts/` relates to a specific host, containing one or more docker-compose files.
 
-### Setting up portainer
+For validation purposes, each compose file must end in `-compose.yaml` or `-compose.yml`.
+
+#### Setting up Portainer
 
 If needed, run through this to install: https://docs.portainer.io/start/install-ce/server/docker/linux#deployment
 
@@ -17,26 +19,28 @@ If needed, run through this to install: https://docs.portainer.io/start/install-
 
 Set up a stack to poll using authenticated requests from this repo: https://docs.portainer.io/user/docker/stacks
 
-## Examples
+Example stacks: https://github.com/portainer/templates/tree/master/stacks
 
-Find example stacks here: https://github.com/portainer/templates/tree/master/stacks
+### GitHub Organization (`github-org/`)
 
-A super basic example can be found in hosts/\_example/docker-compose.yaml
+GitHub org resources (repos, teams, branch protection) managed via [Pulumi YAML](https://www.pulumi.com/docs/iac/languages-sdks/yaml/). See [github-org/README.md](github-org/README.md) for full documentation including Terraform equivalents.
 
-## Development quickstart
-
-To install and use the tools in this project, you can use the following steps:
+## Development Quickstart
 
 ```bash
-gh repo clone nsheaps/portainer-stacks ~/src/portainer-stacks || true
-cd ~/src/portainer-stacks
+gh repo clone nsheaps/iac ~/src/nsheaps/iac || true
+cd ~/src/nsheaps/iac
+mise install                    # install tools (node, yarn, pulumi, etc.)
 corepack enable && corepack install
 yarn install
 ```
 
-## Command reference
+## Command Reference
 
-| Script               | Description                                       |
-| -------------------- | ------------------------------------------------- |
-| `yarn run check`     | Checks linting, formatting, types (if applicable) |
-| `yarn run check:fix` | Runs checks, autofixing where possible            |
+| Command | Description |
+| :--- | :--- |
+| `yarn run check` | Checks linting, formatting, types (if applicable) |
+| `yarn run check:fix` | Runs checks, autofixing where possible |
+| `mise run pulumi:preview` | Preview Pulumi changes (like `terraform plan`) |
+| `mise run pulumi:up` | Apply Pulumi changes (like `terraform apply`) |
+| `mise run pulumi:refresh` | Sync Pulumi state with actual infrastructure |
