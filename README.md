@@ -1,23 +1,34 @@
 # iac
 
-Infrastructure as Code for the nsheaps organization. Manages both container deployments (Docker Compose / Portainer) and GitHub organization resources (Pulumi).
+Infrastructure as Code for the nsheaps organization. Manages container deployments (Docker Compose via [Arcane](https://github.com/getarcaneapp/arcane)) and GitHub organization resources ([Pulumi](https://www.pulumi.com/docs/iac/languages-sdks/yaml/)).
 
 ## Infrastructure Managed
 
-### Docker Compose / Portainer (`hosts/`)
+### Docker Compose / Arcane (`hosts/`)
 
-Container stacks deployed to hosts via [Portainer](https://github.com/portainer/portainer). Each folder in `hosts/` relates to a specific host, containing one or more docker-compose files.
+Container stacks deployed to hosts via [Arcane](https://github.com/getarcaneapp/arcane) GitOps sync. Each folder in `hosts/` relates to a specific host, containing one or more docker-compose files.
 
 For validation purposes, each compose file must end in `-compose.yaml` or `-compose.yml`.
 
-#### Setting up Portainer
+#### Deployment via Arcane
 
-If needed, run through this to install: https://docs.portainer.io/start/install-ce/server/docker/linux#deployment
+Stacks are deployed automatically via the [arcane-deploy](https://github.com/nsheaps/github-actions) GitHub Action:
 
-> [!NOTE]
-> Portainer by default runs the web UI on port 9000. That may be in use, I suggest using 10201
+- **On push to `main`** (when `hosts/heapsnas/**` changes): The `arcane-deploy` workflow discovers compose files and creates/updates GitOps syncs in Arcane.
+- **Sync naming**: Files like `hosts/heapsnas/nextcloud/docker-compose.yaml` become sync `heapsnas-nextcloud` in Arcane.
+- **Auto-sync**: Arcane polls for changes every 5 minutes in addition to push-triggered syncs.
 
-Set up a stack to poll using authenticated requests from this repo: https://docs.portainer.io/user/docker/stacks
+Secrets (Arcane API key, git token) are stored as GitHub repository secrets, synced via the [nsheaps/.github](https://github.com/nsheaps/.github) 1Password sync workflow.
+
+#### Adding a new stack
+
+1. Create a directory under `hosts/<hostname>/<stack-name>/`
+2. Add a `docker-compose.yaml` file
+3. Push to `main` — Arcane will auto-discover and deploy it
+
+#### Legacy: Portainer
+
+Previously, stacks were synced via [Portainer](https://github.com/portainer/portainer) GitOps polling. The `_portainer/` directory in `hosts/` contains the bootstrap compose for Portainer itself. See [Portainer stack docs](https://docs.portainer.io/user/docker/stacks) for reference.
 
 Example stacks: https://github.com/portainer/templates/tree/master/stacks
 

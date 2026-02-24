@@ -1,0 +1,35 @@
+name: arcane-deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "hosts/heapsnas/**"
+      - ".github/workflows/arcane-deploy.yaml"
+
+concurrency:
+  group: arcane-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Arcane
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy heapsnas stacks
+        # TODO: Pin to commit SHA once nsheaps/github-actions has releases.
+        #       See: https://github.com/nsheaps/iac/issues/3
+        uses: nsheaps/github-actions/.github/actions/arcane-deploy@main
+        with:
+          arcane-url: ${{ secrets.ARCANE_URL }}
+          arcane-api-key: ${{ secrets.ARCANE_API_KEY }}
+          environment-id: ${{ secrets.ARCANE_ENVIRONMENT_ID }}
+          compose-dir: hosts/heapsnas
+          sync-name-prefix: heapsnas
+          auth-type: http
+          git-token: ${{ secrets.GIT_TOKEN }}
+          branch: main
