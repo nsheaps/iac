@@ -18,7 +18,7 @@ Stacks are deployed automatically via the [arcane-deploy](https://github.com/nsh
 - **Sync naming**: Files like `hosts/heapsnas/nextcloud/docker-compose.yaml` become sync `heapsnas-nextcloud` in Arcane.
 - **Auto-sync**: Arcane polls for changes every 5 minutes in addition to push-triggered syncs.
 
-Secrets (Arcane API key, git token) are injected via 1Password in CI.
+Secrets (Arcane API key, git token) are stored as GitHub repository secrets, synced via the [nsheaps/.github](https://github.com/nsheaps/.github) 1Password sync workflow.
 
 #### Adding a new stack
 
