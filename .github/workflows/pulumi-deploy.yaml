@@ -23,7 +23,7 @@ jobs:
 
       - name: Load secrets from 1Password
         id: secrets
-        uses: 1password/load-secrets-action@v2
+        uses: 1password/load-secrets-action@v3
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
           GITHUB_TOKEN: op://Infrastructure/github-org-pulumi/token
