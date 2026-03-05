@@ -1,0 +1,5 @@
+config:
+  cloudflare-apps:workerName: nsheaps-cors-proxy
+  cloudflare-apps:allowedOrigins: "https://nsheaps.github.io,https://private-pages.nsheaps.dev,https://cept.nsheaps.dev"
+  cloudflare-apps:r2BucketName: nsheaps-pulumi-state
+  cloudflare-apps:domainName: nsheaps.dev

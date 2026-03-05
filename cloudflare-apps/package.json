@@ -1,0 +1,17 @@
+{
+  "name": "@nsheaps/iac-cloudflare-apps",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@pulumi/cloudflare": "~5.45.0",
+    "@pulumi/pulumi": "~3.145.0"
+  },
+  "devDependencies": {
+    "typescript": "~5.7.0"
+  }
+}

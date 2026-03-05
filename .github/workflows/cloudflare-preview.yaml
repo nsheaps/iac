@@ -1,0 +1,48 @@
+name: cloudflare-preview
+
+on:
+  pull_request:
+    paths:
+      - "cloudflare-apps/**"
+      - ".github/workflows/cloudflare-*.yaml"
+      - "bin/pulumi-wrapper.sh"
+
+concurrency:
+  group: cloudflare-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    name: Pulumi Preview (Cloudflare)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Load secrets from 1Password
+        id: secrets
+        uses: 1password/load-secrets-action@v2
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
+          CLOUDFLARE_API_TOKEN: op://Infrastructure/cloudflare-api-token/credential
+          CLOUDFLARE_ACCOUNT_ID: op://Infrastructure/cloudflare-api-token/account-id
+          PULUMI_CONFIG_PASSPHRASE: op://Infrastructure/pulumi-backend/passphrase
+
+      - name: Install mise
+        uses: jdx/mise-action@v2
+
+      - name: Install cloudflare-apps dependencies
+        run: yarn --cwd cloudflare-apps install --immutable
+
+      - uses: pulumi/actions@v6
+        with:
+          command: preview
+          stack-name: prod
+          work-dir: cloudflare-apps
+          comment-on-pr: true
+          comment-on-summary: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ env.CLOUDFLARE_API_TOKEN }}
+          PULUMI_CONFIG_PASSPHRASE: ${{ env.PULUMI_CONFIG_PASSPHRASE }}

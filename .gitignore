@@ -6,7 +6,7 @@ npm-debug.log*
 /dist
 /local
 /reports
-/node_modules
+node_modules/
 /test/__expected__
 .DS_Store
 Thumbs.db

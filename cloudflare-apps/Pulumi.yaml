@@ -1,0 +1,12 @@
+name: cloudflare-apps
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
+description: >-
+  Cloudflare infrastructure for nsheaps org: R2 state bucket, DNS zone
+  (nsheaps.dev), CORS proxy worker, and app domain records.
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: cloudflare-typescript
