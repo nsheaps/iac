@@ -8,8 +8,10 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # for main we want to build all sha's, but for PRs we want the same group. On main if they share the same group, even if
+  # cancel-in-progress=false, if there's a queued build and another push happens, the queued build will be cancelled.
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || ( github.ref == 'refs/heads/main' && github.sha  || github.ref ) }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
   check:
@@ -25,25 +27,10 @@ jobs:
 
       - name: Authenticate as GitHub App
         id: auth
-        uses: actions/create-github-app-token@v2
+        uses: ./.github/actions/github-app-auth
         with:
           app-id: ${{ secrets.AUTOMATION_GITHUB_APP_ID }}
           private-key: ${{ secrets.AUTOMATION_GITHUB_APP_PRIVATE_KEY }}
-
-      - name: Configure git credentials
-        env:
-          GH_TOKEN: ${{ steps.auth.outputs.token }}
-        run: |
-          gh auth setup-git
-          echo "GH_TOKEN=${GH_TOKEN}" >> "$GITHUB_ENV"
-          echo "GITHUB_TOKEN=${GH_TOKEN}" >> "$GITHUB_ENV"
-
-      - name: Re-checkout with app token
-        uses: actions/checkout@v6
-        with:
-          token: ${{ steps.auth.outputs.token }}
-          clean: false
-          persist-credentials: true
 
       - name: Setup corepack/yarn
         run: corepack enable && corepack install
@@ -73,7 +60,7 @@ jobs:
         id: auto-commit-action
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: 'chore: auto-fix formatting and linting'
+          commit_message: 'chore: `yarn run check:fix`'
 
       - name: Exit with failure if checks failed
         if: steps.check.outcome == 'failure' && ! cancelled()
