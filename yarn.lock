@@ -83,9 +83,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nsheaps/portainer-stacks@workspace:.":
+"@nsheaps/iac@workspace:.":
   version: 0.0.0-use.local
-  resolution: "@nsheaps/portainer-stacks@workspace:."
+  resolution: "@nsheaps/iac@workspace:."
   dependencies:
     nx: "npm:^22.0.0"
     prettier: "npm:^3.0.0"
