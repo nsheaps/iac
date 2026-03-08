@@ -3,9 +3,9 @@ name: cloudflare-preview
 on:
   pull_request:
     paths:
-      - "cloudflare-apps/**"
-      - ".github/workflows/cloudflare-*.yaml"
-      - "bin/pulumi-wrapper.sh"
+      - 'cloudflare-apps/**'
+      - '.github/workflows/cloudflare-*.yaml'
+      - 'bin/pulumi-wrapper.sh'
 
 concurrency:
   group: cloudflare-${{ github.event.pull_request.number }}

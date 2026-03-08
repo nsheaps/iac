@@ -3,9 +3,9 @@ name: pulumi-preview
 on:
   pull_request:
     paths:
-      - "github-org/**"
-      - ".github/workflows/pulumi-*.yaml"
-      - "bin/pulumi-wrapper.sh"
+      - 'github-org/**'
+      - '.github/workflows/pulumi-*.yaml'
+      - 'bin/pulumi-wrapper.sh'
 
 concurrency:
   group: pulumi-${{ github.event.pull_request.number }}

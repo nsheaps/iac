@@ -48,10 +48,10 @@ yarn install
 
 ## Command Reference
 
-| Command | Description |
-| :--- | :--- |
-| `yarn run check` | Checks linting, formatting, types (if applicable) |
-| `yarn run check:fix` | Runs checks, autofixing where possible |
-| `mise run pulumi:preview` | Preview Pulumi changes (like `terraform plan`) |
-| `mise run pulumi:up` | Apply Pulumi changes (like `terraform apply`) |
-| `mise run pulumi:refresh` | Sync Pulumi state with actual infrastructure |
+| Command                   | Description                                       |
+| :------------------------ | :------------------------------------------------ |
+| `yarn run check`          | Checks linting, formatting, types (if applicable) |
+| `yarn run check:fix`      | Runs checks, autofixing where possible            |
+| `mise run pulumi:preview` | Preview Pulumi changes (like `terraform plan`)    |
+| `mise run pulumi:up`      | Apply Pulumi changes (like `terraform apply`)     |
+| `mise run pulumi:refresh` | Sync Pulumi state with actual infrastructure      |

@@ -4,9 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - "github-org/**"
-      - ".github/workflows/pulumi-deploy.yaml"
-      - "bin/pulumi-wrapper.sh"
+      - 'github-org/**'
+      - '.github/workflows/pulumi-deploy.yaml'
+      - 'bin/pulumi-wrapper.sh'
 
 concurrency:
   group: pulumi-deploy
