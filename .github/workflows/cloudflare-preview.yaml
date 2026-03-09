@@ -14,22 +14,13 @@ concurrency:
 jobs:
   preview:
     name: Pulumi Preview (Cloudflare)
+    if: ${{ false }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Load secrets from 1Password
-        id: secrets
-        uses: 1password/load-secrets-action@v2
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
-          CLOUDFLARE_API_TOKEN: op://Infrastructure/cloudflare-api-token/credential
-          CLOUDFLARE_ACCOUNT_ID: op://Infrastructure/cloudflare-api-token/account-id
-          PULUMI_CONFIG_PASSPHRASE: op://Infrastructure/pulumi-backend/passphrase
-
+      - uses: actions/checkout@v6
       - name: Install mise
         uses: jdx/mise-action@v2
 
