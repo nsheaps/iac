@@ -14,24 +14,13 @@ concurrency:
 jobs:
   preview:
     name: Pulumi Preview
+    if: ${{ false }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Load secrets from 1Password
-        id: secrets
-        uses: 1password/load-secrets-action@v2
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
-          GITHUB_TOKEN: op://Infrastructure/github-org-pulumi/token
-          PULUMI_CONFIG_PASSPHRASE: op://Infrastructure/pulumi-backend/passphrase
-          # Uncomment when R2 backend is provisioned:
-          # AWS_ACCESS_KEY_ID: op://Infrastructure/pulumi-r2-backend/access-key-id
-          # AWS_SECRET_ACCESS_KEY: op://Infrastructure/pulumi-r2-backend/secret-access-key
-
+      - uses: actions/checkout@6
       - uses: pulumi/actions@v6
         with:
           command: preview
