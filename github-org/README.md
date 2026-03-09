@@ -4,12 +4,12 @@ Manages GitHub organization resources (repositories, teams, branch protection, a
 
 ## What's Managed
 
-| Resource Type | Example |
-| :--- | :--- |
-| Repositories | Settings, visibility, merge strategy |
+| Resource Type     | Example                                            |
+| :---------------- | :------------------------------------------------- |
+| Repositories      | Settings, visibility, merge strategy               |
 | Branch Protection | Required reviews, status checks, admin enforcement |
-| Teams | Team membership and repo access |
-| App Installations | Which repos a GitHub App can access |
+| Teams             | Team membership and repo access                    |
+| App Installations | Which repos a GitHub App can access                |
 
 > **Note:** GitHub Apps _themselves_ (name, permissions, webhooks) cannot be managed via Pulumi. Only the association between an app installation and repositories is manageable. See [Pulumi GitHub Provider](https://www.pulumi.com/registry/packages/github/).
 
@@ -44,24 +44,24 @@ mise run pulumi:stack-init dev
 
 If you're coming from Terraform, this table maps concepts:
 
-| Concept | Terraform | Pulumi YAML |
-| :--- | :--- | :--- |
-| Project definition | `main.tf` + `provider.tf` + `versions.tf` | `Pulumi.yaml` (single file) |
-| State backend | `backend "s3" {}` in `terraform {}` block | `PULUMI_BACKEND_URL` env var |
-| Provider config | `provider "github" { token = var.x }` | `GITHUB_TOKEN` env var (auto-detected) |
-| Repository | `resource "github_repository" "x" {}` | `type: github:Repository` |
-| Branch protection | `resource "github_branch_protection" "x" {}` | `type: github:BranchProtection` |
-| Team | `resource "github_team" "x" {}` | `type: github:Team` |
-| Team ↔ repo | `resource "github_team_repository" "x" {}` | `type: github:TeamRepository` |
-| Variables | `variable "x" {}` + `terraform.tfvars` | `config:` block + `Pulumi.<stack>.yaml` |
-| Outputs | `output "x" { value = ... }` | `outputs:` with `${resource.prop}` |
-| Plan/Preview | `terraform plan` | `pulumi preview` |
-| Apply | `terraform apply` | `pulumi up` |
-| Destroy | `terraform destroy` | `pulumi destroy` |
-| Import existing | `terraform import <type>.<name> <id>` | `pulumi import <type> <name> <id>` |
-| Workspaces | `terraform workspace select dev` | `pulumi stack select dev` |
-| Remote state ref | `data "terraform_remote_state" "x" {}` | `type: pulumi:pulumi:StackReference` |
-| Format check | `terraform fmt -check` | N/A (use prettier) |
+| Concept            | Terraform                                    | Pulumi YAML                             |
+| :----------------- | :------------------------------------------- | :-------------------------------------- |
+| Project definition | `main.tf` + `provider.tf` + `versions.tf`    | `Pulumi.yaml` (single file)             |
+| State backend      | `backend "s3" {}` in `terraform {}` block    | `PULUMI_BACKEND_URL` env var            |
+| Provider config    | `provider "github" { token = var.x }`        | `GITHUB_TOKEN` env var (auto-detected)  |
+| Repository         | `resource "github_repository" "x" {}`        | `type: github:Repository`               |
+| Branch protection  | `resource "github_branch_protection" "x" {}` | `type: github:BranchProtection`         |
+| Team               | `resource "github_team" "x" {}`              | `type: github:Team`                     |
+| Team ↔ repo        | `resource "github_team_repository" "x" {}`   | `type: github:TeamRepository`           |
+| Variables          | `variable "x" {}` + `terraform.tfvars`       | `config:` block + `Pulumi.<stack>.yaml` |
+| Outputs            | `output "x" { value = ... }`                 | `outputs:` with `${resource.prop}`      |
+| Plan/Preview       | `terraform plan`                             | `pulumi preview`                        |
+| Apply              | `terraform apply`                            | `pulumi up`                             |
+| Destroy            | `terraform destroy`                          | `pulumi destroy`                        |
+| Import existing    | `terraform import <type>.<name> <id>`        | `pulumi import <type> <name> <id>`      |
+| Workspaces         | `terraform workspace select dev`             | `pulumi stack select dev`               |
+| Remote state ref   | `data "terraform_remote_state" "x" {}`       | `type: pulumi:pulumi:StackReference`    |
+| Format check       | `terraform fmt -check`                       | N/A (use prettier)                      |
 
 ### Key Differences
 
@@ -80,9 +80,9 @@ If you're coming from Terraform, this table maps concepts:
      my-new-repo:
        type: github:Repository
        properties:
-         name: "my-new-repo"
-         visibility: "private"
-         description: "Managed by Pulumi"
+         name: 'my-new-repo'
+         visibility: 'private'
+         description: 'Managed by Pulumi'
    ```
 3. Run `mise run pulumi:preview --stack prod` to see the diff
 4. Open a PR — CI will run `pulumi preview` automatically

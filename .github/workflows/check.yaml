@@ -1,7 +1,11 @@
 name: check
 
 on:
+  pull_request:
   push:
+    branches:
+      - main
+  workflow_dispatch:
 
 concurrency:
   # for main we want to build all sha's, but for PRs we want the same group. On main if they share the same group, even if
@@ -12,22 +16,16 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-    # permissions:
-    #   handled by PAT
-    #   contents: write
-    #   actions: write
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - name: Fetch Secrets
-        id: load_secrets
-        uses: 1password/load-secrets-action@v3
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
-          GITHUB_PAT_N8AGENT: op://heapsinfra/gha--github--n8agent-pat/credential
-
       - name: Checkout repository
-        uses: actions/checkout@v6
+        id: checkout
+        uses: nsheaps/github-actions/.github/actions/checkout-as-app@main
         with:
-          token: ${{ steps.load_secrets.outputs.GITHUB_PAT_N8AGENT }}
+          app-id: ${{ secrets.AUTOMATION_GITHUB_APP_ID }}
+          private-key: ${{ secrets.AUTOMATION_GITHUB_APP_PRIVATE_KEY }}
 
       - name: Setup corepack/yarn
         run: corepack enable && corepack install
@@ -44,22 +42,23 @@ jobs:
       - name: Run checks
         id: check
         run: yarn run check:ci
+        continue-on-error: true
 
       - name: Auto-fix issues
-        if: failure()
+        if: steps.check.outcome == 'failure'
         run: |
           echo "Checks failed, attempting to auto-fix..."
           yarn run check:fix
 
       - name: Commit and push auto-fixes
-        if: failure()
+        if: steps.check.outcome == 'failure' && ! cancelled()
+        id: auto-commit-action
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
-          commit_message: 'Auto-fix: Apply automated formatting and linting fixes'
-          commit_user_name: 'n8agent[bot]'
-          commit_user_email: 'n8agent@users.noreply.github.com'
+          commit_message: 'chore: `yarn run check:fix`'
 
-      - name: Re-run checks after auto-fix
-        if: failure()
+      - name: Exit with failure if checks failed
+        if: steps.check.outcome == 'failure' && ! cancelled()
         run: |
-          yarn run check:ci || echo "check:ci still failed after autofixing"
+          echo "Checks failed! Auto-committed fixes, but more issues may remain."
+          exit 1

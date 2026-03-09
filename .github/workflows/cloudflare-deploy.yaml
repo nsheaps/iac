@@ -4,9 +4,9 @@ on:
   push:
     branches: [main]
     paths:
-      - "cloudflare-apps/**"
-      - ".github/workflows/cloudflare-deploy.yaml"
-      - "bin/pulumi-wrapper.sh"
+      - 'cloudflare-apps/**'
+      - '.github/workflows/cloudflare-deploy.yaml'
+      - 'bin/pulumi-wrapper.sh'
 
 concurrency:
   group: cloudflare-deploy

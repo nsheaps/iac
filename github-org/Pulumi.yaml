@@ -15,7 +15,7 @@ resources:
     type: github:Repository
     properties:
       name: iac
-      description: "Infrastructure as Code — Portainer stacks + Pulumi GitHub org management"
+      description: 'Infrastructure as Code — Portainer stacks + Pulumi GitHub org management'
       visibility: public
       hasIssues: true
       hasProjects: false
@@ -43,7 +43,7 @@ resources:
       requiredStatusChecks:
         - strict: true
           contexts:
-            - "check"
+            - 'check'
 
   # ---------------------------------------------------------------------------
   # Teams
@@ -52,7 +52,7 @@ resources:
     type: github:Team
     properties:
       name: bots
-      description: "Bot accounts and automation service accounts"
+      description: 'Bot accounts and automation service accounts'
       privacy: closed
 
   bots-iac-access:
