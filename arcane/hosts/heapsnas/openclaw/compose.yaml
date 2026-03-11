@@ -1,0 +1,116 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
+name: 'openclaw'
+
+# OP_SERVICE_ACCOUNT_TOKEN is set as an Arcane global variable by the
+# arcane-deploy workflow. It's available to all compose projects via
+# Arcane's .env.global mechanism.
+
+services:
+  init-secrets:
+    image: 1password/op:2
+    user: '0:0' # Run as root for putting in the secrets dir
+    environment:
+      - OP_SERVICE_ACCOUNT_TOKEN=${OP_SERVICE_ACCOUNT_TOKEN}
+    volumes:
+      - openclaw-secrets:/run/secrets:rw
+    command:
+      - /bin/bash
+      - -c
+      - |
+        set -euo pipefail
+        {
+          function fetch() {
+              local ref="$$1"
+              local dest="$$2"
+              op read --no-newline "$$ref" > "$$dest"
+              echo " got '$$ref' => '$$dest'"
+          }
+          echo "Fetching all secrets in parallel..."
+
+          fetch "op://heapsinfra/arcane--heapsnas--openclaw/gateway_token" "/run/secrets/openclaw_gateway_token" &
+
+          wait
+          chmod 444 /run/secrets/*
+        } || {
+          echo "Failed to fetch secrets, waiting 5 minutes before exiting"
+          sleep 300
+          exit 1
+        }
+
+  openclaw-gateway:
+    image: ghcr.io/openclaw/openclaw:latest
+    restart: unless-stopped
+    init: true
+    environment:
+      - HOME=/home/node
+      - TERM=xterm-256color
+    volumes:
+      - openclaw-config:/home/node/.openclaw
+      - openclaw-workspace:/home/node/.openclaw/workspace
+      - openclaw-secrets:/run/secrets:ro
+    ports:
+      - '${OPENCLAW_GATEWAY_PORT:-18789}:18789'
+    command:
+      - node
+      - dist/index.js
+      - gateway
+      - --bind
+      - lan
+      - --port
+      - '18789'
+      - --token-file
+      - /run/secrets/openclaw_gateway_token
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - cloudflared
+    depends_on:
+      init-secrets:
+        condition: service_completed_successfully
+
+  openclaw-cli:
+    image: ghcr.io/openclaw/openclaw:latest
+    restart: unless-stopped
+    init: true
+    network_mode: 'service:openclaw-gateway'
+    cap_drop:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      - HOME=/home/node
+      - TERM=xterm-256color
+      - BROWSER=echo
+    volumes:
+      - openclaw-config:/home/node/.openclaw
+      - openclaw-workspace:/home/node/.openclaw/workspace
+      - openclaw-secrets:/run/secrets:ro
+    stdin_open: true
+    tty: true
+    entrypoint: ['node', 'dist/index.js']
+    depends_on:
+      openclaw-gateway:
+        condition: service_healthy
+
+# https://docs.docker.com/engine/storage/drivers/
+volumes:
+  openclaw-secrets:
+    driver: local
+  openclaw-config:
+    driver: local
+  openclaw-workspace:
+    driver: local
+
+# https://docs.docker.com/engine/network/drivers/
+networks:
+  cloudflared:
+    external: true
