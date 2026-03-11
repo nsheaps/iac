@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'hosts/heapsnas/**'
+      - 'arcane/hosts/heapsnas/**'
       - '.github/workflows/arcane-deploy.yaml'
 
 concurrency:
@@ -28,7 +28,7 @@ jobs:
           arcane-url: ${{ secrets.ARCANE_URL }}
           arcane-api-key: ${{ secrets.ARCANE_API_KEY }}
           environment-id: ${{ secrets.ARCANE_ENVIRONMENT_ID }}
-          compose-dir: hosts/heapsnas
+          compose-dir: arcane/hosts/heapsnas
           sync-name-prefix: heapsnas
           auth-type: http
           git-token: ${{ secrets.GIT_TOKEN }}
