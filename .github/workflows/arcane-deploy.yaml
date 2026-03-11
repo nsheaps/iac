@@ -20,6 +20,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set Arcane global variables
+        env:
+          ARCANE_URL: ${{ secrets.ARCANE_URL }}
+          ARCANE_API_KEY: ${{ secrets.ARCANE_API_KEY }}
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          # Fetch existing global variables
+          existing=$(curl -sf --max-time 30 \
+            -H "X-Api-Key: ${ARCANE_API_KEY}" \
+            "${ARCANE_URL}/api/templates/variables")
+
+          # Merge OP_SERVICE_ACCOUNT_TOKEN into existing variables (upsert)
+          updated=$(echo "${existing}" | jq \
+            --arg key "OP_SERVICE_ACCOUNT_TOKEN" \
+            --arg val "${OP_SERVICE_ACCOUNT_TOKEN}" \
+            '.data | map(select(.key != $key)) + [{"key": $key, "value": $val}] | {"variables": .}')
+
+          # Update global variables
+          curl -sf --max-time 30 \
+            -X PUT \
+            -H "X-Api-Key: ${ARCANE_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "${updated}" \
+            "${ARCANE_URL}/api/templates/variables" > /dev/null
+
+          echo "Global variables updated"
+
       - name: Deploy heapsnas stacks
         # TODO: Pin to commit SHA once nsheaps/github-actions has releases.
         #       See: https://github.com/nsheaps/iac/issues/3
