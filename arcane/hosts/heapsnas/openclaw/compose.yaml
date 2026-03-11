@@ -1,8 +1,10 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json
 name: 'openclaw'
 
-# Set in env on arcane:
-# - OP_SERVICE_ACCOUNT_TOKEN for secrets fetching
+# OP_SERVICE_ACCOUNT_TOKEN must be set in the Arcane environment settings
+# (Environment > Settings > Environment variables) so it's available during
+# docker compose variable substitution. This is a one-time Arcane config,
+# not a manual per-stack step.
 
 services:
   init-secrets:

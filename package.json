@@ -9,7 +9,7 @@
     "check:fix": "nx run-many --target check:prettier:fix --target check:docker",
     "check:prettier": "nx exec -- prettier --check '**/*.{yaml,yml,md,json,json5}'",
     "check:prettier:fix": "nx exec -- prettier --write '**/*.{yaml,yml,md,json,json5}'",
-    "check:docker": "nx exec -- bin/check-docker-compose.sh hosts/*/*-compose.{yaml,yml} arcane/hosts/*/*.{yaml,yml}"
+    "check:docker": "nx exec -- bin/check-docker-compose.sh hosts/*/*-compose.{yaml,yml} arcane/hosts/*/*/compose.{yaml,yml}"
   },
   "author": "Nathan Heaps",
   "license": "MIT",
