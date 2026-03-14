@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@pulumi/cloudflare": "~5.45.0",
-    "@pulumi/pulumi": "~3.145.0"
+    "@pulumi/pulumi": "~3.225.0"
   },
   "devDependencies": {
     "typescript": "~5.7.0"
