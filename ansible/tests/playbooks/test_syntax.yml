@@ -1,0 +1,48 @@
+---
+# Test playbook for verifying ansible syntax and structure
+- name: Syntax and Structure Tests
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  
+  tasks:
+    - name: Check main playbook syntax
+      command: ansible-playbook ../../local.yml --syntax-check
+      register: syntax_check
+      changed_when: false
+      failed_when: syntax_check.rc != 0
+      tags: [syntax]
+
+    - name: List all tasks in main playbook
+      command: ansible-playbook ../../local.yml --list-tasks
+      register: task_list
+      changed_when: false
+      tags: [tasks]
+
+    - name: Verify users role is included
+      assert:
+        that:
+          - "'users :' in task_list.stdout"
+        fail_msg: "Users role is not included in main playbook"
+        success_msg: "Users role is properly included"
+      tags: [tasks]
+
+    - name: List all available tags
+      command: ansible-playbook ../../local.yml --list-tags
+      register: tag_list
+      changed_when: false
+      tags: [tags]
+
+    - name: Display available tags
+      debug:
+        msg: "{{ tag_list.stdout_lines }}"
+      tags: [tags]
+
+    - name: Verify critical tags exist
+      assert:
+        that:
+          - "'users' in tag_list.stdout"
+          - "'base' in tag_list.stdout"
+        fail_msg: "Critical tags are missing"
+        success_msg: "All critical tags are present"
+      tags: [tags]

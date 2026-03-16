@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+
+find ./inventory/ -type f -name "*.cfg" -print | while read -r inventory; do
+  inventory="$(basename -s .cfg "$inventory")"
+  ansible-playbook "./playbooks/$(basename -s .cfg $inventory).yml" --inventory "./inventory/$inventory.cfg"
+done

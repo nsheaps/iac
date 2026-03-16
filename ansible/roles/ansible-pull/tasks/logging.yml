@@ -1,0 +1,28 @@
+---
+# Configure logging for ansible-pull
+
+- name: ansible-pull | logging | create log file
+  file:
+    path: "{{ ansible_pull_logfile }}"
+    owner: "{{ ansible_pull_user }}"
+    group: "{{ ansible_pull_user }}"
+    mode: '0664'
+    state: touch
+  changed_when: false
+
+- name: ansible-pull | logging | add logrotate configuration
+  copy:
+    content: |
+      {{ ansible_pull_logfile }} {
+          weekly
+          rotate 4
+          compress
+          delaycompress
+          missingok
+          notifempty
+          create 0664 {{ ansible_pull_user }} {{ ansible_pull_user }}
+      }
+    dest: /etc/logrotate.d/ansible-pull
+    owner: root
+    group: root
+    mode: '0644'

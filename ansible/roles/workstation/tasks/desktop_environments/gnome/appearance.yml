@@ -1,0 +1,117 @@
+- name: gnome | appearance | copy wallpaper file
+  tags: gnome,gnome-wallpaper
+  copy:
+    src: gnome/wallpaper.png
+    dest: /usr/share/backgrounds/example_user-wallpaper.png
+    owner: root
+    group: root
+    mode: 0644
+
+- name: gnome | appearance | set wallpaper
+  tags: gnome,gnome-wallpaper
+  become_user: example_user
+  dconf:
+    key: "/org/gnome/desktop/background/picture-uri"
+    value: "'file:///usr/share/backgrounds/example_user-wallpaper.png'"
+
+- name: gnome | appearance | set wallpaper position
+  tags: gnome,gnome-wallpaper
+  become_user: example_user
+  dconf:
+    key: "/org/gnome/desktop/background/picture-options"
+    value: "'zoom'"
+
+- name: gnome | appearance | copy lock screen background file
+  tags: gnome,gnome-lockscreen
+  copy:
+    src: files/gnome/lockscreen.jpg
+    dest: /usr/share/backgrounds/example_user-lockscreen.jpg
+    owner: root
+    group: root
+    mode: 0644
+
+- name: gnome | appearance | set lock screen background
+  tags: gnome,gnome-lockscreen
+  become_user: example_user
+  dconf:
+    key: "/org/gnome/desktop/screensaver/picture-uri"
+    value: "'file:///usr/share/backgrounds/example_user-lockscreen.jpg'"
+
+- name: gnome | appearance | set lock screen background position
+  tags: gnome,gnome-lockscreen
+  become_user: example_user
+  dconf:
+    key: "/org/gnome/desktop/screensaver/picture-options"
+    value: "'zoom'"
+
+# - name: gnome | appearance | enable user-theme extension
+#   become_user: example_user
+#   shell: |
+#     dconf write /org/gnome/shell/enabled-extensions "['user-theme@gnome-shell-extensions.gcampax.github.com']"
+#     gnome-shell --replace &
+
+## & ARC theme
+# - name: gnome | appearance | gnome | appearance | set icon theme
+#   become_user: example_user
+#   dconf:
+#     key: "/org/gnome/desktop/interface/icon-theme"
+#     value: "'Moka-Minimal'"
+
+# - name: gnome | appearance | install GTK theme
+#   apt: name=arc-theme
+
+# - name: gnome | appearance | set GTK theme
+#   become_user: example_user
+#   dconf:
+#     key: "/org/gnome/desktop/interface/gtk-theme"
+#     value: "'Arc-Dark'"
+
+# - name: gnome | appearance | set shell theme
+#   become_user: example_user
+#   dconf:
+#     key: "/org/gnome/shell/extensions/user-theme/name"
+#     value: "'Arc-Dark'"
+
+## & ORCHIS [dark] theme
+## ? https://github.com/vinceliuice/Orchis-theme
+
+- name: gnome | appearance | checkout Orchis GTK theme
+  tags: gnome,gnome-theme
+  git:
+    repo: 'https://github.com/vinceliuice/Orchis-theme.git'
+    dest: /tmp/Orchis-theme
+
+- name: gnome | appearance | install Orchis GTK theme
+  tags: gnome,gnome-theme
+  shell: yes | /tmp/Orchis-theme/install.sh --shell 38 --tweaks macos
+
+- name: gnome | appearance | set desktop theme to Orchis-Dark GTK theme
+  tags: gnome,gnome-theme
+  become_user: example_user
+  dconf:
+    key: "/org/gnome/desktop/interface/gtk-theme"
+    value: "'Orchis-Dark'"
+
+- name: gnome | appearance | set shell theme to Orchis GTK theme
+  become_user: example_user
+  dconf:
+    key: "/org/gnome/shell/extensions/user-theme/name"
+    value: "'Orchis-Dark'"
+
+## & COLLOID icon theme
+- name: gnome | appearance | checkout Colid Icon theme
+  tags: gnome,gnome-icons
+  git:
+    repo: 'https://github.com/vinceliuice/Colloid-icon-theme.git'
+    dest: /tmp/Colloid-icon-theme
+
+- name: gnome | appearance | install Colid Icon theme
+  tags: gnome,gnome-icons
+  shell: yes | /tmp/Colloid-icon-theme/install.sh
+
+- name: gnome | appearance | set icon theme to Colid Icon theme
+  tags: gnome,gnome-icons
+  become_user: example_user
+  dconf:
+    key: "/org/gnome/desktop/interface/icon-theme"
+    value: "'Colloid'"

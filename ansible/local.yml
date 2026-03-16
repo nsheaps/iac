@@ -1,0 +1,104 @@
+---
+# tasks to complete before running roles
+- hosts: all
+  tags: always
+  become: true
+  become_method: sudo
+  
+  pre_tasks:
+    - name: pre-run | update package cache (arch)
+      tags: always, arch
+      pacman: update_cache=yes
+      changed_when: False
+      when: ansible_distribution == "Archlinux"
+
+    - name: pre-run | update package cache (debian, etc)
+      tags: always, debian
+      apt: update_cache=yes
+      changed_when: False
+      when: ansible_distribution in ["Debian", "Ubuntu"]
+
+    - name: pre-run | update package cache (fedora)
+      tags: always, fedora
+      dnf:
+        name: "*"
+        state: latest
+      changed_when: False
+      when: ansible_distribution == "Fedora"
+      
+# run roles
+- hosts: all
+  tags: users
+  become: true
+  roles:
+    - users
+
+- hosts: all
+  tags: base
+  become: true
+  roles:
+    - base
+
+- hosts: all
+  tags: ansible-pull
+  become: true
+  roles:
+    - ansible-pull
+
+- hosts: workstation
+  tags: workstation
+  become: true
+  roles:
+    - workstation
+
+- hosts: workstation
+  tags: say-hello
+  become: true
+  roles:
+    - role: say-hello
+      vars:
+        title: "Ansible Provisioning Complete"
+        message: "{{ ansible_hostname }} has been updated by ansible-pull"
+
+- hosts: server
+  tags: server
+  become: true
+  roles:
+    - server
+
+# end of run cleanup and reporting
+- hosts: all
+  become: true
+  tasks:
+    - name: cleanup package cache (debian and ubuntu)
+      tags: always
+      apt:
+        autoclean: yes
+      changed_when: false
+      when: ansible_distribution in ["Debian", "Pop!_OS", "Ubuntu"]
+
+    - name: autoremove orphan packages (debian and ubuntu)
+      tags: always
+      apt:
+        autoremove: yes
+        purge: yes
+      when: ansible_distribution in ["Debian", "Pop!_OS", "Ubuntu"]
+
+    - name: send completion alert
+      include_tasks: playbooks/send_completion_alert.yml
+      tags: always
+      when:
+        - task_failed is not defined
+
+    - name: send failure alert
+      include_tasks: playbooks/send_failure_alert.yml
+      tags: always
+      when:
+        - task_failed is defined
+        - task_failed == true
+
+  post_tasks:
+
+    - name: Suggest login/logout to complete Gnome configuration
+      ansible.builtin.debug:
+        msg: 'Please logout& login to complete the configuration.'

@@ -1,0 +1,31 @@
+---
+- name: Common
+  hosts: all
+  roles:
+    - ../roles/common
+- name: Notify a string on all n8house linux hosts
+  # TODO: limit to linux-desktop hosts, or update logic to support headless/terminal only hosts
+  hosts: linux
+  roles:
+    - ../roles/say-hello
+  vars:
+    title: "ansible@{{ git_repo }}@{{ git_short_sha }}"
+    message: "{{ git_commit_subject }}"
+- name: Apply always-on power settings
+  hosts: n8server
+  roles:
+    - ../roles/always-on-if-plugged-in
+# - name: Echo a string on all n8house hosts
+#   hosts: all
+#   tasks:
+#     - name: Echo a string
+#       command:
+#         cmd: echo "Hello from Ansible!"
+#       register: result
+
+#     - name: Print the output
+#       debug:
+# - name: Sync known ssh hosts
+#   hosts: all
+#   roles:
+#     - ../roles/ssh-known-hosts

@@ -1,0 +1,23 @@
+---
+# Install required packages for ansible-pull
+
+- name: ansible-pull | packages | ensure ansible is installed
+  package:
+    name: ansible
+    state: latest
+
+- name: ansible-pull | packages | install git
+  package:
+    name: git
+    state: present
+
+- name: ansible-pull | packages | install cron package
+  package:
+    name: "{{ cron_package | default('cron') }}"
+    state: present
+
+- name: ansible-pull | packages | install acl package (Debian-based)
+  package:
+    name: acl
+    state: present
+  when: ansible_os_family == "Debian"

@@ -1,0 +1,74 @@
+##################################################################
+# general config                                                 #
+##################################################################
+
+Host *
+    ServerAliveInterval 15
+    ServerAliveCountMax 5
+
+##################################################################
+# home machines                                                  #
+##################################################################
+
+Host gateway
+    Hostname gateway.example.local
+    Port 65001
+    User example_user
+
+Host ha
+    Hostname ha.example.local
+    Port 22
+    User root
+
+Host home
+    Hostname vpn.example.local
+    Port 2099
+    User example_user
+
+Host jarvis
+    Hostname jarvis.example.local
+    Port 22
+    User pi
+
+Host music
+    Hostname music.example.local
+    Port 22
+    User volumio
+
+Host retro*
+    Hostname %h.example.local
+    Port 22
+    User pi
+
+Host storage
+    Hostname storage.example.local
+    Port 22
+    User example_user
+
+Host vm-host-*
+    Hostname %h.example.local
+    Port 22
+    User example_user
+
+##################################################################
+# vps                                                            #
+##################################################################
+Host community
+    Hostname community.learnlinux.tv
+    Port 22
+    User example_user
+
+Host *link
+    Hostname learnlinux.link
+    Port 22
+    User example_user
+
+Host web
+    Hostname web.learnlinux.tv
+    Port 22
+    User example_user
+
+Host wiki
+    Hostname wiki.learnlinux.tv
+    Port 22
+    User example_user

@@ -1,0 +1,180 @@
+---
+# Bootstrap role - Initial system setup for ansible-managed hosts
+# This role works in conjunction with the ansible-pull role
+
+- name: Check for 1Password CLI
+  command: which op
+  register: op_check
+  failed_when: false
+  changed_when: false
+
+- name: Fail if 1Password CLI is not installed
+  fail:
+    msg: "1Password CLI (op) is not installed. Please run the bootstrap script first."
+  when: op_check.rc != 0
+
+- name: Check 1Password authentication
+  shell: op account list
+  register: op_auth
+  failed_when: false
+  changed_when: false
+
+- name: Fail if not authenticated with 1Password
+  fail:
+    msg: "Not authenticated with 1Password. Please run: eval $(op signin)"
+  when: op_auth.rc != 0
+
+- name: Create temporary directory for secrets
+  tempfile:
+    state: directory
+    suffix: bootstrap
+  register: temp_dir
+
+# SSH Known Hosts Setup
+- name: Retrieve SSH known hosts from 1Password
+  shell: |
+    op item get "Ansible SSH Known Hosts" --fields notes || echo ""
+  register: known_hosts_content
+  changed_when: false
+
+- name: Deploy SSH known hosts
+  copy:
+    content: "{{ known_hosts_content.stdout }}"
+    dest: /etc/ssh/ssh_known_hosts
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+  when: known_hosts_content.stdout | length > 0
+
+# The ansible user is now created by the ansible-pull role
+# We just need to set up initial SSH keys for remote access if needed
+
+- name: Check if ansible user exists
+  user:
+    name: ansible
+    state: present
+  register: ansible_user
+  become: true
+
+- name: Retrieve ansible SSH private key from 1Password
+  shell: |
+    op item get "Ansible User SSH Key" --fields "private key" > {{ temp_dir.path }}/ansible_id_ed25519
+  when: ansible_user is succeeded
+  no_log: true
+
+- name: Retrieve ansible SSH public key from 1Password
+  shell: |
+    op item get "Ansible User SSH Key" --fields "public key" > {{ temp_dir.path }}/ansible_id_ed25519.pub
+  when: ansible_user is succeeded
+
+- name: Deploy SSH keys for ansible user
+  block:
+    - name: Ensure ansible .ssh directory exists
+      file:
+        path: /home/ansible/.ssh
+        state: directory
+        owner: ansible
+        group: ansible
+        mode: '0700'
+    
+    - name: Deploy private key
+      copy:
+        src: "{{ temp_dir.path }}/ansible_id_ed25519"
+        dest: /home/ansible/.ssh/id_ed25519
+        owner: ansible
+        group: ansible
+        mode: '0600'
+    
+    - name: Deploy public key
+      copy:
+        src: "{{ temp_dir.path }}/ansible_id_ed25519.pub"
+        dest: /home/ansible/.ssh/id_ed25519.pub
+        owner: ansible
+        group: ansible
+        mode: '0644'
+    
+    - name: Add public key to authorized_keys
+      authorized_key:
+        user: ansible
+        state: present
+        key: "{{ lookup('file', temp_dir.path + '/ansible_id_ed25519.pub') }}"
+  become: true
+  when: ansible_user is succeeded
+
+# Deploy initial SSH keys for the current user
+- name: Deploy SSH keys for current user
+  block:
+    - name: Ensure user .ssh directory exists
+      file:
+        path: "/home/{{ running_as }}/.ssh"
+        state: directory
+        owner: "{{ running_as }}"
+        group: "{{ running_as }}"
+        mode: '0700'
+    
+    - name: Copy ansible SSH key for current user
+      copy:
+        src: "{{ temp_dir.path }}/ansible_id_ed25519"
+        dest: "/home/{{ running_as }}/.ssh/ansible_id_ed25519"
+        owner: "{{ running_as }}"
+        group: "{{ running_as }}"
+        mode: '0600'
+    
+    - name: Copy ansible public key for current user
+      copy:
+        src: "{{ temp_dir.path }}/ansible_id_ed25519.pub"
+        dest: "/home/{{ running_as }}/.ssh/ansible_id_ed25519.pub"
+        owner: "{{ running_as }}"
+        group: "{{ running_as }}"
+        mode: '0644'
+
+# Clean up temporary files
+- name: Remove temporary directory
+  file:
+    path: "{{ temp_dir.path }}"
+    state: absent
+  when: temp_dir.path is defined
+
+# Collect this host's SSH host keys for central storage
+- name: Get hostname
+  command: hostname -s
+  register: hostname
+  changed_when: false
+
+- name: Get IP addresses
+  command: hostname -I
+  register: ip_addresses
+  changed_when: false
+
+- name: Collect SSH host keys
+  shell: |
+    echo "# {{ hostname.stdout }} - collected on $(date)"
+    ssh-keyscan -H {{ hostname.stdout }} 2>/dev/null
+    ssh-keyscan -H {{ hostname.stdout }}.local 2>/dev/null
+    for ip in {{ ip_addresses.stdout }}; do
+      ssh-keyscan -H $ip 2>/dev/null
+    done
+    echo ""
+  register: host_keys
+  changed_when: false
+
+- name: Save host keys to file for later commit
+  copy:
+    content: "{{ host_keys.stdout }}"
+    dest: "{{ root_dir }}/host_keys_{{ hostname.stdout }}.txt"
+    owner: "{{ running_as }}"
+    group: "{{ running_as }}"
+    mode: '0644'
+
+- name: Display next steps
+  debug:
+    msg:
+      - "Bootstrap initial setup complete!"
+      - "Next steps:"
+      - "1. Review and commit the host_vars file for {{ hostname.stdout }}"
+      - "2. Add the collected SSH host keys to your central store"
+      - "3. Run ansible-pull to complete system configuration"
+      - ""
+      - "To run ansible-pull manually:"
+      - "  sudo ansible-pull -U {{ ansible_pull_repo | default('https://github.com/nsheaps/iac.git') }} -C {{ ansible_pull_branch | default('main') }} -i ansible/hosts ansible/local.yml"

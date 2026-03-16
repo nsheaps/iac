@@ -1,0 +1,6 @@
+---
+# Debian-specific variables for ansible-pull
+
+cron_package: cron
+cron_service: cron
+sudo_group: sudo
