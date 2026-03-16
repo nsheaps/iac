@@ -1,0 +1,108 @@
+---
+# Nerd Fonts installation tasks
+- name: users | {{ username }} | create fonts directory
+  file:
+    path: "/home/{{ username }}/.local/share/fonts"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0755
+    recurse: yes
+  tags:
+    - users
+    - "{{ username }}"
+    - fonts
+
+- name: users | {{ username }} | download Hack Nerd Font
+  get_url:
+    url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/Hack.zip"
+    dest: "/tmp/Hack.zip"
+    mode: 0644
+    timeout: 30
+  tags:
+    - users
+    - "{{ username }}"
+    - fonts
+
+- name: users | {{ username }} | extract Hack Nerd Font
+  unarchive:
+    src: "/tmp/Hack.zip"
+    dest: "/home/{{ username }}/.local/share/fonts"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    remote_src: yes
+    creates: "/home/{{ username }}/.local/share/fonts/HackNerdFont-Regular.ttf"
+  tags:
+    - users
+    - "{{ username }}"
+    - fonts
+
+- name: users | {{ username }} | download FiraCode Nerd Font
+  get_url:
+    url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip"
+    dest: "/tmp/FiraCode.zip"
+    mode: 0644
+    timeout: 30
+  tags:
+    - users
+    - "{{ username }}"
+    - fonts
+
+- name: users | {{ username }} | extract FiraCode Nerd Font
+  unarchive:
+    src: "/tmp/FiraCode.zip"
+    dest: "/home/{{ username }}/.local/share/fonts"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    remote_src: yes
+    creates: "/home/{{ username }}/.local/share/fonts/FiraCodeNerdFont-Regular.ttf"
+  tags:
+    - users
+    - "{{ username }}"
+    - fonts
+
+- name: users | {{ username }} | download FiraMono Nerd Font
+  get_url:
+    url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraMono.zip"
+    dest: "/tmp/FiraMono.zip"
+    mode: 0644
+    timeout: 30
+  tags:
+    - users
+    - "{{ username }}"
+    - fonts
+
+- name: users | {{ username }} | extract FiraMono Nerd Font
+  unarchive:
+    src: "/tmp/FiraMono.zip"
+    dest: "/home/{{ username }}/.local/share/fonts"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    remote_src: yes
+    creates: "/home/{{ username }}/.local/share/fonts/FiraMonoNerdFont-Regular.otf"
+  tags:
+    - users
+    - "{{ username }}"
+    - fonts
+
+- name: users | {{ username }} | update font cache
+  command: fc-cache -fv /home/{{ username }}/.local/share/fonts
+  become_user: "{{ username }}"
+  changed_when: false
+  tags:
+    - users
+    - "{{ username }}"
+    - fonts
+
+- name: users | {{ username }} | cleanup font zip files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "/tmp/Hack.zip"
+    - "/tmp/FiraCode.zip"
+    - "/tmp/FiraMono.zip"
+  tags:
+    - users
+    - "{{ username }}"
+    - fonts

@@ -1,0 +1,10 @@
+---
+git_commit_message: "fake(ci): fake commit message first line"
+git_commit_subject: "fake(ci): fake commit message first line"
+git_sha: "XXXXXXXX"
+git_short_sha: "XXXXXXXX"
+git_repo: "example/example"
+message: "message from all.yml"
+
+telegram_chat_id: "<telegram_chat_id_here>"
+telegram_token: "<telegram_token_here>"

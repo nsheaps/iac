@@ -1,0 +1,16 @@
+---
+# Nathans-64GB-MBP configuration (macOS system)
+
+# User configuration
+user_configs:
+  - system_user: root
+    config_profile: root
+  - system_user: nheaps
+    config_profile: nheaps
+
+# Ansible pull configuration  
+ansible_cron_minute: "*/30"
+
+# Healthchecks.io monitoring
+healthchecks_io_uuid: "{{ vault_healthchecks_io_uuid_nathans_mbp | default('') }}"
+healthchecks_io_enabled: true

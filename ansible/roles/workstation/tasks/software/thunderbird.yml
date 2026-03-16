@@ -1,0 +1,18 @@
+- name: software | thunderbird | install package
+  tags: packages,flatpak,thunderbird,workstation-packages
+  become_user: example_user
+  flatpak:
+    name: org.mozilla.thunderbird
+    method: user
+    state: present
+  when: thunderbird is defined and thunderbird == true
+
+- name: software | thunderbird | enable autostart
+  tags: packages,flatpak,thunderbird,workstation-packages
+  file:
+    src: /home/example_user/.local/share/flatpak/exports/share/applications/org.mozilla.Thunderbird.desktop
+    dest: /home/example_user/.config/autostart/org.mozilla.Thunderbird.desktop
+    owner: example_user
+    group: example_user
+    state: link
+  when: thunderbird is defined and thunderbird == true

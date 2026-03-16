@@ -1,0 +1,14 @@
+#!/bin/bash
+PATH=/usr/bin:/bin
+
+XUSERS=($(who | cut -d " " -f1 | sort -u))
+for XUSER in "${XUSERS[@]}"; do
+    NAME=(${XUSER/(/ })
+    DISPLAY=${NAME[1]/)/}
+    DBUS_ADDRESS=unix:path=/run/user/$(id -u ${NAME[0]})/bus
+    echo to $NAME: notify-send "$@"
+    sudo -u ${NAME[0]} DISPLAY=${DISPLAY} \
+                       DBUS_SESSION_BUS_ADDRESS=${DBUS_ADDRESS} \
+                       PATH=${PATH} \
+                       notify-send "$@"
+done

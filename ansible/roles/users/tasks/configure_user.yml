@@ -1,0 +1,494 @@
+---
+# Handle root user specially - just lock password and set shell
+- name: users | {{ username }} | configure root user
+  user:
+    name: "{{ username }}"
+    shell: "{{ user_shell }}"
+    password: "!"
+    password_lock: yes
+    state: present
+  when: username == "root"
+  tags:
+    - users
+    - "{{ username }}"
+
+# Handle regular users - create user and group
+- name: users | {{ username }} | create user
+  user:
+    name: "{{ username }}"
+    uid: "{{ uid | default(omit) }}"
+    group: "{{ username }}"
+    groups: "{{ user_groups }}"
+    shell: "{{ user_shell }}"
+    password: "{{ user_password | default('!') }}"
+    comment: "{{ user_full_name }}"
+    update_password: on_create
+    state: present
+  when: username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+
+- name: users | {{ username }} | create home directory
+  file:
+    path: "/home/{{ username }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0755
+  when: username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+
+- name: users | {{ username }} | create config directories
+  file:
+    path: "/home/{{ username }}/{{ item }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0700
+  loop:
+    - .ssh
+    - .config
+  when: username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+
+# Bash configuration
+- name: users | {{ username }} | copy bash configs
+  copy:
+    src: "{{ profile }}/bash/{{ item }}"
+    dest: "/home/{{ username }}/.{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+  loop:
+    - bash_aliases
+    - bash_functions
+    - bash_profile
+    - bash_prompt
+    - bashrc
+    - profile
+  when: 
+    - "'bash' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - bash
+
+# Git configuration - generate from template with custom email
+- name: users | {{ username }} | generate git config
+  copy:
+    content: |
+      [user]
+      	email = {{ user_email }}
+      	name = {{ user_full_name }}
+    dest: "/home/{{ username }}/.gitconfig"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+  when: 
+    - "'git' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - git
+
+# Htop configuration
+- name: users | {{ username }} | create htop config directory
+  file:
+    path: "/home/{{ username }}/.config/htop"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0755
+  when: 
+    - "'htop' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - htop
+
+- name: users | {{ username }} | copy htop config
+  copy:
+    src: "{{ profile }}/htop/htoprc"
+    dest: "/home/{{ username }}/.config/htop/htoprc"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+  when: 
+    - "'htop' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - htop
+
+# MC configuration
+- name: users | {{ username }} | create mc config directory
+  file:
+    path: "/home/{{ username }}/.config/mc"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0755
+  when: 
+    - "'mc' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - mc
+
+- name: users | {{ username }} | copy mc config
+  copy:
+    src: "{{ profile }}/mc/mc.ini"
+    dest: "/home/{{ username }}/.config/mc/ini"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+  when: 
+    - "'mc' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - mc
+
+# SSH configuration
+- name: users | {{ username }} | add authorized SSH key
+  authorized_key:
+    user: "{{ username }}"
+    state: present
+    key: "{{ lookup('file', profile + '/ssh/' + profile + '_id_ed25519.pub') }}"
+  when: 
+    - "'ssh' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - ssh
+
+# Tmux configuration - replace username in paths
+- name: users | {{ username }} | copy tmux configs
+  copy:
+    src: "{{ profile }}/tmux/{{ item }}"
+    dest: "/home/{{ username }}/.{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+  loop:
+    - tmux.conf.server
+    - tmux.conf.workstation
+  when: 
+    - "'tmux' in user_configs"
+    - username != "root"
+  register: tmux_copy
+  tags:
+    - users
+    - "{{ username }}"
+    - tmux
+
+- name: users | {{ username }} | update tmux config paths
+  replace:
+    path: "/home/{{ username }}/.{{ item }}"
+    regexp: "/home/nsheaps/"
+    replace: "/home/{{ username }}/"
+  loop:
+    - tmux.conf.server
+    - tmux.conf.workstation
+  when: 
+    - "'tmux' in user_configs"
+    - username != profile
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - tmux
+
+- name: users | {{ username }} | set tmux config based on host type
+  file:
+    src: "/home/{{ username }}/.tmux.conf.{{ 'workstation' if 'workstation' in group_names else 'server' }}"
+    dest: "/home/{{ username }}/.tmux.conf"
+    state: link
+    owner: "{{ username }}"
+    group: "{{ username }}"
+  when: 
+    - "'tmux' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - tmux
+
+# Zsh configuration
+- name: users | {{ username }} | copy zsh configs
+  copy:
+    src: "{{ profile }}/zsh/zshrc"
+    dest: "/home/{{ username }}/.zshrc"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+  when: 
+    - "'zsh' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - zsh
+
+- name: users | {{ username }} | create zsh config directory
+  file:
+    path: "/home/{{ username }}/.config/zsh"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0755
+  when: 
+    - "'zsh' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - zsh
+
+- name: users | {{ username }} | copy zsh config modules
+  copy:
+    src: "{{ profile }}/zsh/{{ item }}"
+    dest: "/home/{{ username }}/.config/zsh/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+  loop:
+    - aliases.zsh
+    - bindkey.zsh
+    - completion.zsh
+    - exports.zsh
+    - functions.zsh
+    - history.zsh
+    - path.zsh
+    - plugins.zsh
+    - prompt.zsh
+    - setopt.zsh
+    - theming.zsh
+  when: 
+    - "'zsh' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - zsh
+
+- name: users | {{ username }} | update zsh path configs
+  replace:
+    path: "/home/{{ username }}/.config/zsh/path.zsh"
+    regexp: "/home/nsheaps/"
+    replace: "/home/{{ username }}/"
+  when: 
+    - "'zsh' in user_configs"
+    - username != profile
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - zsh
+
+# Vim configuration
+- name: users | {{ username }} | create vim directories
+  file:
+    path: "/home/{{ username }}/{{ item }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0700
+  loop:
+    - .vim
+    - .vim/autoload
+    - .vim/bundle
+    - .vim/colors
+    - .vim/ftplugin
+  when: 
+    - "'vim' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - vim
+
+- name: users | {{ username }} | copy vim config
+  copy:
+    src: "{{ profile }}/vim/vimrc"
+    dest: "/home/{{ username }}/.vimrc"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+  when: 
+    - "'vim' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - vim
+
+- name: users | {{ username }} | copy vim color schemes
+  copy:
+    src: "{{ profile }}/vim/{{ item }}"
+    dest: "/home/{{ username }}/.vim/colors/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+  loop:
+    - bubblegum-256-dark.vim
+    - darktango.vim
+    - jellybeans.vim
+    - xoria256.vim
+    - zenburn.vim
+  when: 
+    - "'vim' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - vim
+
+- name: users | {{ username }} | copy vim ftplugin files
+  copy:
+    src: "{{ profile }}/vim/{{ item }}"
+    dest: "/home/{{ username }}/.vim/ftplugin/{{ item }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0644
+  loop:
+    - cmake.vim
+    - cpp.vim
+    - html.vim
+    - perl.vim
+    - python.vim
+    - ruby.vim
+    - sql.vim
+    - xml.vim
+  when: 
+    - "'vim' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - vim
+
+- name: users | {{ username }} | install pathogen
+  copy:
+    src: "{{ profile }}/vim/pathogen.vim"
+    dest: "/home/{{ username }}/.vim/autoload/pathogen.vim"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0700
+  when: 
+    - "'vim' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - vim
+
+- name: users | {{ username }} | clone vim plugins
+  git:
+    repo: "{{ item }}"
+    dest: "/home/{{ username }}/.vim/bundle/{{ item | regex_replace('.*?([^/]+)\\.git$', '\\1') | regex_replace('\\.vim$', '') }}"
+    force: yes
+  loop:
+    - https://github.com/ctrlpvim/ctrlp.vim.git
+    - https://github.com/davidhalter/jedi-vim.git
+    - https://github.com/pearofducks/ansible-vim
+    - https://github.com/rhysd/vim-grammarous.git
+    - https://github.com/ron89/thesaurus_query.vim
+    - https://github.com/scrooloose/nerdtree.git
+    - https://github.com/tpope/vim-obsession.git
+    - https://github.com/vim-syntastic/syntastic.git
+  become_user: "{{ username }}"
+  when: 
+    - "'vim' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - vim
+
+# Tmux plugin management
+- name: users | {{ username }} | create tmux directories
+  file:
+    path: "/home/{{ username }}/{{ item }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: 0700
+  loop:
+    - .tmux
+    - .tmux/plugins
+  when: 
+    - "'tmux' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - tmux
+
+- name: users | {{ username }} | clone tmux plugins
+  git:
+    repo: "{{ item.repo }}"
+    dest: "/home/{{ username }}/.tmux/plugins/{{ item.name }}"
+    force: yes
+  loop:
+    - { repo: "https://github.com/srsudar/tmux-completion.git", name: "completion" }
+    - { repo: "https://github.com/tmux-plugins/tmux-continuum", name: "continuum" }
+    - { repo: "https://github.com/tmux-plugins/tmux-resurrect", name: "resurrect" }
+  become_user: "{{ username }}"
+  when: 
+    - "'tmux' in user_configs"
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - tmux
+
+# Include fonts installation for non-root users
+- name: users | {{ username }} | include font installation
+  include_tasks: fonts.yml
+  when: username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - fonts
+
+# Update bashrc paths if username differs from profile
+- name: users | {{ username }} | update bash paths
+  replace:
+    path: "/home/{{ username }}/.bashrc"
+    regexp: "/home/nsheaps/"
+    replace: "/home/{{ username }}/"
+  when: 
+    - "'bash' in user_configs"
+    - username != profile
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - bash
+
+- name: users | {{ username }} | update bash aliases
+  replace:
+    path: "/home/{{ username }}/.bash_aliases"
+    regexp: "nsheaps@"
+    replace: "{{ username }}@"
+  when: 
+    - "'bash' in user_configs"
+    - username != profile
+    - username != "root"
+  tags:
+    - users
+    - "{{ username }}"
+    - bash

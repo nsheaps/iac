@@ -1,0 +1,180 @@
+#!/bin/bash
+# Test runner for nsheaps/iac ansible project
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Script directory
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Change to project root
+cd "$PROJECT_ROOT"
+
+# Function to print colored output
+print_header() {
+    echo -e "\n${YELLOW}===================================================${NC}"
+    echo -e "${YELLOW}$1${NC}"
+    echo -e "${YELLOW}===================================================${NC}\n"
+}
+
+print_success() {
+    echo -e "${GREEN}✓ $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}✗ $1${NC}"
+}
+
+# Function to run a test
+run_test() {
+    local test_name=$1
+    local test_file=$2
+    local test_tags=${3:-}
+    
+    echo -e "${YELLOW}Running: $test_name${NC}"
+    
+    if [ -n "$test_tags" ]; then
+        ansible-playbook "$test_file" --tags "$test_tags"
+    else
+        ansible-playbook "$test_file"
+    fi
+    
+    if [ $? -eq 0 ]; then
+        print_success "$test_name passed"
+    else
+        print_error "$test_name failed"
+        return 1
+    fi
+    echo ""
+}
+
+# Parse command line arguments
+SPECIFIC_TEST=""
+VERBOSE=false
+LIST_ONLY=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            echo "Usage: $0 [OPTIONS] [TEST_NAME]"
+            echo ""
+            echo "Run tests for the nsheaps/iac ansible project"
+            echo ""
+            echo "Options:"
+            echo "  -h, --help     Show this help message"
+            echo "  -v, --verbose  Run with verbose output"
+            echo "  -l, --list     List available tests without running them"
+            echo ""
+            echo "Test names:"
+            echo "  inheritance    Test user inheritance system"
+            echo "  users          Test user configuration"
+            echo "  syntax         Test playbook syntax"
+            echo "  all            Run all tests (default)"
+            echo ""
+            echo "Examples:"
+            echo "  $0              # Run all tests"
+            echo "  $0 inheritance  # Run only inheritance test"
+            echo "  $0 -v syntax    # Run syntax test with verbose output"
+            exit 0
+            ;;
+        -v|--verbose)
+            VERBOSE=true
+            shift
+            ;;
+        -l|--list)
+            LIST_ONLY=true
+            shift
+            ;;
+        *)
+            SPECIFIC_TEST=$1
+            shift
+            ;;
+    esac
+done
+
+# Add verbose flag to ansible if requested
+if [ "$VERBOSE" = true ]; then
+    export ANSIBLE_VERBOSITY=1
+fi
+
+# List tests if requested
+if [ "$LIST_ONLY" = true ]; then
+    print_header "Available Tests"
+    echo "1. inheritance - Test user profile inheritance system"
+    echo "2. users       - Test user configuration logic"
+    echo "3. syntax      - Test playbook syntax and structure"
+    echo "4. all         - Run all tests"
+    exit 0
+fi
+
+# Main test execution
+print_header "nsheaps/iac ansible Test Suite"
+
+FAILED_TESTS=()
+PASSED_TESTS=()
+
+# Function to track test results
+track_test() {
+    local test_name=$1
+    shift
+    if run_test "$test_name" "$@"; then
+        PASSED_TESTS+=("$test_name")
+    else
+        FAILED_TESTS+=("$test_name")
+    fi
+}
+
+# Run specific test or all tests
+case "${SPECIFIC_TEST:-all}" in
+    inheritance)
+        track_test "User Inheritance" "tests/playbooks/test_user_inheritance.yml"
+        ;;
+    users)
+        track_test "User Configuration" "tests/playbooks/test_user_configuration.yml"
+        ;;
+    syntax)
+        track_test "Syntax Check" "tests/playbooks/test_syntax.yml"
+        ;;
+    all|"")
+        print_header "Running All Tests"
+        
+        # Run each test
+        track_test "User Inheritance" "tests/playbooks/test_user_inheritance.yml"
+        track_test "User Configuration" "tests/playbooks/test_user_configuration.yml"
+        track_test "Syntax Check" "tests/playbooks/test_syntax.yml"
+        ;;
+    *)
+        print_error "Unknown test: $SPECIFIC_TEST"
+        echo "Run '$0 --help' for usage information"
+        exit 1
+        ;;
+esac
+
+# Print summary
+print_header "Test Summary"
+
+if [ ${#PASSED_TESTS[@]} -gt 0 ]; then
+    echo -e "${GREEN}Passed (${#PASSED_TESTS[@]}):${NC}"
+    for test in "${PASSED_TESTS[@]}"; do
+        print_success "$test"
+    done
+fi
+
+if [ ${#FAILED_TESTS[@]} -gt 0 ]; then
+    echo -e "\n${RED}Failed (${#FAILED_TESTS[@]}):${NC}"
+    for test in "${FAILED_TESTS[@]}"; do
+        print_error "$test"
+    done
+    echo ""
+    print_error "Some tests failed!"
+    exit 1
+else
+    echo ""
+    print_success "All tests passed!"
+fi
