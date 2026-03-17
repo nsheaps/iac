@@ -9,11 +9,13 @@ This directory contains custom Ansible filter plugins that extend Ansible's temp
 Resolves inheritance relationships in user configuration profiles, allowing one profile to inherit and extend another profile's configuration.
 
 **Usage:**
+
 ```yaml
-{{ config_profiles | resolve_user_inheritance }}
+{ { config_profiles | resolve_user_inheritance } }
 ```
 
 **Features:**
+
 - Deep merging of configuration profiles
 - Support for multi-level inheritance chains
 - Detection and prevention of circular inheritance
@@ -22,22 +24,23 @@ Resolves inheritance relationships in user configuration profiles, allowing one 
 - Scalar values are overridden by child profiles
 
 **Example:**
+
 ```yaml
 config_profiles:
   base_user:
     shell: /bin/bash
     groups: [users]
     configs: [bash, git]
-  
+
   developer:
     inherits_from: base_user
-    groups: [docker, sudo]  # Results in: [users, docker, sudo]
-    configs: [vim, tmux]     # Results in: [bash, git, vim, tmux]
-  
+    groups: [docker, sudo] # Results in: [users, docker, sudo]
+    configs: [vim, tmux] # Results in: [bash, git, vim, tmux]
+
   admin:
     inherits_from: developer
-    email: admin@example.com  # Adds new field
-    groups: [wheel]           # Results in: [users, docker, sudo, wheel]
+    email: admin@example.com # Adds new field
+    groups: [wheel] # Results in: [users, docker, sudo, wheel]
 ```
 
 ## Development
@@ -50,6 +53,7 @@ config_profiles:
 4. Implement the filter methods with appropriate error handling
 
 Example structure:
+
 ```python
 from ansible.errors import AnsibleError
 
@@ -58,7 +62,7 @@ class FilterModule(object):
         return {
             'my_filter': self.my_filter_method,
         }
-    
+
     def my_filter_method(self, value, *args, **kwargs):
         # Implementation here
         return processed_value
@@ -67,6 +71,7 @@ class FilterModule(object):
 ### Testing Filters
 
 Test filter plugins using the test playbooks in `tests/playbooks/`:
+
 ```bash
 ansible-playbook tests/playbooks/test_user_inheritance.yml
 ```
@@ -88,6 +93,7 @@ ansible-playbook tests/playbooks/test_user_inheritance.yml
 ## Troubleshooting
 
 If filters aren't being loaded:
+
 1. Check that `filter_plugins = ./filter_plugins` is in `ansible.cfg`
 2. Ensure Python files have correct permissions
 3. Verify no syntax errors with: `python -m py_compile filter_plugins/*.py`

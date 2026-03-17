@@ -4,7 +4,7 @@
   hosts: localhost
   connection: local
   gather_facts: no
-  
+
   tasks:
     - name: Check main playbook syntax
       command: ansible-playbook ../../local.yml --syntax-check
@@ -23,8 +23,8 @@
       assert:
         that:
           - "'users :' in task_list.stdout"
-        fail_msg: "Users role is not included in main playbook"
-        success_msg: "Users role is properly included"
+        fail_msg: 'Users role is not included in main playbook'
+        success_msg: 'Users role is properly included'
       tags: [tasks]
 
     - name: List all available tags
@@ -35,7 +35,7 @@
 
     - name: Display available tags
       debug:
-        msg: "{{ tag_list.stdout_lines }}"
+        msg: '{{ tag_list.stdout_lines }}'
       tags: [tags]
 
     - name: Verify critical tags exist
@@ -43,6 +43,6 @@
         that:
           - "'users' in tag_list.stdout"
           - "'base' in tag_list.stdout"
-        fail_msg: "Critical tags are missing"
-        success_msg: "All critical tags are present"
+        fail_msg: 'Critical tags are missing'
+        success_msg: 'All critical tags are present'
       tags: [tags]

@@ -2,14 +2,14 @@
   tags: mate,mate-desktop,mate-workspaces
   become_user: example_user
   dconf:
-    key: "/org/mate/marco/general/num-workspaces"
-    value: "6"
+    key: '/org/mate/marco/general/num-workspaces'
+    value: '6'
 
 - name: mate | desktop settings | set workspace names
   tags: mate,mate-workspaces
   become_user: example_user
   dconf:
-    key: "/org/mate/marco/workspace-names/name-{{ item.number }}"
+    key: '/org/mate/marco/workspace-names/name-{{ item.number }}'
     value: "'{{ item.name }}'"
   with_items:
     - { number: 1, name: mail }

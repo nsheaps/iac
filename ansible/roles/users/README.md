@@ -31,13 +31,14 @@ Configure users in `host_vars/<hostname>.yml`:
 
 ```yaml
 user_configs:
-  - system_user: nsheaps      # Actual system username
-    config_profile: nsheaps   # Profile to apply
+  - system_user: nsheaps # Actual system username
+    config_profile: nsheaps # Profile to apply
 ```
 
 ## File Organization
 
 Configuration files are organized under `files/<profile>/`:
+
 - `bash/`: Bash configuration (aliases, functions, bashrc, etc.)
 - `zsh/`: Zsh configuration (modular setup with separate files)
 - `vim/`: Vim configuration (vimrc, color schemes, plugins)

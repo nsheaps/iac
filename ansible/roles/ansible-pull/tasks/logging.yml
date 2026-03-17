@@ -3,9 +3,9 @@
 
 - name: ansible-pull | logging | create log file
   file:
-    path: "{{ ansible_pull_logfile }}"
-    owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_user }}"
+    path: '{{ ansible_pull_logfile }}'
+    owner: '{{ ansible_pull_user }}'
+    group: '{{ ansible_pull_user }}'
     mode: '0664'
     state: touch
   changed_when: false

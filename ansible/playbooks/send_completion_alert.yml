@@ -6,8 +6,6 @@
     return_content: yes
   changed_when: False
   when: healthcheck_uuid is defined
-
-
 # - name: send completion notification via telegram
 #   tags: always
 #   telegram:

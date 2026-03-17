@@ -16,7 +16,7 @@
 - name: software | vivaldi | add repository
   tags: packages,vivaldi
   apt_repository:
-    repo: "deb https://repo.vivaldi.com/stable/deb/ stable main"
+    repo: 'deb https://repo.vivaldi.com/stable/deb/ stable main'
     state: present
     filename: vivaldi
   when:

@@ -33,7 +33,9 @@ ansible-test --help       # Get help
 ```
 
 ### Test User Inheritance
+
 Tests that the user profile inheritance system works correctly:
+
 ```bash
 ansible-playbook tests/playbooks/test_user_inheritance.yml
 
@@ -42,7 +44,9 @@ ansible-playbook tests/playbooks/test_user_inheritance.yml --tags verify
 ```
 
 ### Test User Configuration
+
 Tests user configuration logic without actually creating users:
+
 ```bash
 ansible-playbook tests/playbooks/test_user_configuration.yml
 
@@ -53,7 +57,9 @@ ansible-playbook tests/playbooks/test_user_configuration.yml --tags root
 ```
 
 ### Test Syntax and Structure
+
 Validates the main playbook syntax and structure:
+
 ```bash
 ansible-playbook tests/playbooks/test_syntax.yml
 
@@ -64,6 +70,7 @@ ansible-playbook tests/playbooks/test_syntax.yml --tags tags
 ```
 
 ### Run All Tests
+
 ```bash
 # Run all test playbooks
 for test in tests/playbooks/*.yml; do
@@ -93,6 +100,7 @@ When adding new functionality, create corresponding test playbooks:
 ## Continuous Improvement
 
 Tests should be:
+
 - **Idempotent**: Running tests multiple times produces the same result
 - **Isolated**: Tests don't depend on external state
 - **Fast**: Use `--check` mode where possible

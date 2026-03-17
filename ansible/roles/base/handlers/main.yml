@@ -4,7 +4,7 @@
 
 - name: restart_sshd
   service:
-    name: "{{ openssh_service }}"
+    name: '{{ openssh_service }}'
     state: restarted
 
 - name: update_tmux_plugin_perms

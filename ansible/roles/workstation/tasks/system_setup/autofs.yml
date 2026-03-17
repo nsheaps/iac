@@ -20,7 +20,7 @@
   tags: autofs,dotfiles,dotfiles-example_user
   copy:
     src: autofs/auto.master
-    dest: "{{ autofs_master_config }}"
+    dest: '{{ autofs_master_config }}'
     owner: root
     group: root
     mode: 0644
@@ -33,7 +33,7 @@
   tags: autofs,dotfiles,dotfiles-example_user
   copy:
     src: autofs/auto.nfs
-    dest: "{{ autofs_nfs_config }}"
+    dest: '{{ autofs_nfs_config }}'
     owner: root
     group: root
     mode: 0644

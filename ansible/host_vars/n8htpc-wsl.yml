@@ -9,7 +9,7 @@ user_configs:
     config_profile: nsheaps
 
 # Ansible pull configuration
-ansible_cron_minute: "*/30"
+ansible_cron_minute: '*/30'
 
 # Healthchecks.io monitoring
 healthchecks_io_uuid: "{{ vault_healthchecks_io_uuid_n8htpc_wsl | default('') }}"

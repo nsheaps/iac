@@ -6,21 +6,21 @@
   gather_facts: no
   vars_files:
     - ../../roles/users/defaults/main.yml
-  
+
   tasks:
     - name: Display raw config profiles
       debug:
-        msg: "Raw profiles: {{ config_profiles }}"
+        msg: 'Raw profiles: {{ config_profiles }}'
       tags: [raw]
 
     - name: Test inheritance resolution
       debug:
-        msg: "Resolved profiles: {{ config_profiles | resolve_user_inheritance }}"
+        msg: 'Resolved profiles: {{ config_profiles | resolve_user_inheritance }}'
       tags: [resolved]
 
     - name: Verify nheaps inherits from nsheaps
       vars:
-        resolved: "{{ config_profiles | resolve_user_inheritance }}"
+        resolved: '{{ config_profiles | resolve_user_inheritance }}'
       assert:
         that:
           - resolved.nheaps.email == "nheaps@gather.town"
@@ -28,6 +28,6 @@
           - resolved.nheaps.shell == "/bin/zsh"
           - "'vim' in resolved.nheaps.configs"
           - "'tmux' in resolved.nheaps.configs"
-        fail_msg: "nheaps profile did not properly inherit from nsheaps"
-        success_msg: "nheaps successfully inherits from nsheaps with email override"
+        fail_msg: 'nheaps profile did not properly inherit from nsheaps'
+        success_msg: 'nheaps successfully inherits from nsheaps with email override'
       tags: [verify]

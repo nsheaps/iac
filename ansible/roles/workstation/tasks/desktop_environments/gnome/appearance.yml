@@ -11,14 +11,14 @@
   tags: gnome,gnome-wallpaper
   become_user: example_user
   dconf:
-    key: "/org/gnome/desktop/background/picture-uri"
+    key: '/org/gnome/desktop/background/picture-uri'
     value: "'file:///usr/share/backgrounds/example_user-wallpaper.png'"
 
 - name: gnome | appearance | set wallpaper position
   tags: gnome,gnome-wallpaper
   become_user: example_user
   dconf:
-    key: "/org/gnome/desktop/background/picture-options"
+    key: '/org/gnome/desktop/background/picture-options'
     value: "'zoom'"
 
 - name: gnome | appearance | copy lock screen background file
@@ -34,14 +34,14 @@
   tags: gnome,gnome-lockscreen
   become_user: example_user
   dconf:
-    key: "/org/gnome/desktop/screensaver/picture-uri"
+    key: '/org/gnome/desktop/screensaver/picture-uri'
     value: "'file:///usr/share/backgrounds/example_user-lockscreen.jpg'"
 
 - name: gnome | appearance | set lock screen background position
   tags: gnome,gnome-lockscreen
   become_user: example_user
   dconf:
-    key: "/org/gnome/desktop/screensaver/picture-options"
+    key: '/org/gnome/desktop/screensaver/picture-options'
     value: "'zoom'"
 
 # - name: gnome | appearance | enable user-theme extension
@@ -89,13 +89,13 @@
   tags: gnome,gnome-theme
   become_user: example_user
   dconf:
-    key: "/org/gnome/desktop/interface/gtk-theme"
+    key: '/org/gnome/desktop/interface/gtk-theme'
     value: "'Orchis-Dark'"
 
 - name: gnome | appearance | set shell theme to Orchis GTK theme
   become_user: example_user
   dconf:
-    key: "/org/gnome/shell/extensions/user-theme/name"
+    key: '/org/gnome/shell/extensions/user-theme/name'
     value: "'Orchis-Dark'"
 
 ## & COLLOID icon theme
@@ -113,5 +113,5 @@
   tags: gnome,gnome-icons
   become_user: example_user
   dconf:
-    key: "/org/gnome/desktop/interface/icon-theme"
+    key: '/org/gnome/desktop/interface/icon-theme'
     value: "'Colloid'"

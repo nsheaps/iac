@@ -25,6 +25,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/nsheaps/iac/main/ansible/bin
 ```
 
 This interactive script will:
+
 - Install required packages (ansible, git, 1Password CLI, etc.)
 - Set up SSH and authentication
 - Clone this repository
@@ -36,6 +37,7 @@ See [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md) for detailed instructions.
 ### Option B: Manual Setup
 
 1. **Install ansible and git:**
+
    ```bash
    # Ubuntu/Debian
    sudo apt update && sudo apt install -y ansible git
@@ -48,6 +50,7 @@ See [docs/BOOTSTRAP.md](docs/BOOTSTRAP.md) for detailed instructions.
    ```
 
 2. **Run ansible-pull:**
+
    ```bash
    sudo ansible-pull \
      -U https://github.com/nsheaps/iac.git \
@@ -75,11 +78,13 @@ sudo ansible-pull \
 ```
 
 After the first run, ansible-pull will:
+
 - Run automatically every 30 minutes via cron
 - Show a desktop notification ("Ansible Provisioning Complete") when changes are applied
 - Log output to `/var/log/ansible-pull.log`
 
 To manually trigger a run at any time:
+
 ```bash
 sudo /usr/local/bin/ansible-provision
 ```
@@ -171,8 +176,8 @@ user_configs:
     config_profile: nsheaps
 
 ansible_pull_enabled: true
-ansible_pull_cron_minute: "*/30"
-ansible_pull_cron_hour: "*"
+ansible_pull_cron_minute: '*/30'
+ansible_pull_cron_hour: '*'
 ```
 
 ### Inventory

@@ -2,7 +2,7 @@
   tags: packages,cron
   package:
     name:
-      - "{{ cron_package }}"
+      - '{{ cron_package }}'
     state: latest
 
 - name: system setup | cron | start and enable cronie daemon
@@ -12,5 +12,4 @@
     state: started
     enabled: true
   when: ansible_distribution == "Archlinux"
-
 # Note: ansible-pull cron jobs are now handled by the ansible-pull role

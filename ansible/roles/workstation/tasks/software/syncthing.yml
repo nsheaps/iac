@@ -107,7 +107,7 @@
 # Note: Not using systemd module because it triggers a dbus error due to no session while user is not logged in
 - name: software | syncthing | start and enable syncthing
   tags: syncthing
-  command: "{{ item }}"
+  command: '{{ item }}'
   with_items:
     - systemctl enable syncthing@example_user
     - systemctl restart syncthing@example_user
@@ -127,8 +127,8 @@
   become_user: example_user
   replace:
     path: /home/example_user/.config/syncthing/config.xml
-    regexp: "<startBrowser>true</startBrowser>"
-    replace: "<startBrowser>false</startBrowser>"
+    regexp: '<startBrowser>true</startBrowser>'
+    replace: '<startBrowser>false</startBrowser>'
   notify: restart_syncthing
   when:
     - syncthing is defined
@@ -139,8 +139,8 @@
   become_user: example_user
   replace:
     path: /home/example_user/.config/syncthing/config.xml
-    regexp: "<theme>default</theme>"
-    replace: "<theme>dark</theme>"
+    regexp: '<theme>default</theme>'
+    replace: '<theme>dark</theme>'
   notify: restart_syncthing
   when:
     - syncthing is defined

@@ -3,18 +3,18 @@
 
 - name: ansible-pull | user | create ansible group
   group:
-    name: "{{ ansible_pull_user }}"
+    name: '{{ ansible_pull_user }}'
     state: present
 
 - name: ansible-pull | user | create ansible user
   user:
-    name: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_user }}"
-    groups: 
+    name: '{{ ansible_pull_user }}'
+    group: '{{ ansible_pull_user }}'
+    groups:
       - "{{ sudo_group | default('sudo') }}"
     append: yes
     shell: /bin/bash
-    home: "/home/{{ ansible_pull_user }}"
+    home: '/home/{{ ansible_pull_user }}'
     create_home: yes
     state: present
 
@@ -23,7 +23,7 @@
     content: |
       # Allow ansible user to run commands without password
       {{ ansible_pull_user }} ALL=(ALL) NOPASSWD: ALL
-    dest: "/etc/sudoers.d/{{ ansible_pull_user }}"
+    dest: '/etc/sudoers.d/{{ ansible_pull_user }}'
     owner: root
     group: root
     mode: '0440'
@@ -31,8 +31,8 @@
 
 - name: ansible-pull | user | create .ssh directory
   file:
-    path: "/home/{{ ansible_pull_user }}/.ssh"
+    path: '/home/{{ ansible_pull_user }}/.ssh'
     state: directory
-    owner: "{{ ansible_pull_user }}"
-    group: "{{ ansible_pull_user }}"
+    owner: '{{ ansible_pull_user }}'
+    group: '{{ ansible_pull_user }}'
     mode: '0700'

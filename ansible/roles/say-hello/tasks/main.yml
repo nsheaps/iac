@@ -31,4 +31,3 @@
   command: >
     notify-send-all -t 10000 "{{ title }}" "{{ message }}"
   changed_when: false
-

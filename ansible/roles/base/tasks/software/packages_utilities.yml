@@ -3,38 +3,37 @@
   package:
     state: latest
     name:
-      - at                        # https://linuxize.com/post/at-command-in-linux/
-      - colordiff                 # https://www.colordiff.org/
+      - at # https://linuxize.com/post/at-command-in-linux/
+      - colordiff # https://www.colordiff.org/
       - curl
-      - "{{ dns_utils_package}}"
+      - '{{ dns_utils_package}}'
       - font-manager
       - htop
       - iotop
-      - "{{ lm_sensors_package }}"
+      - '{{ lm_sensors_package }}'
       - lolcat
       - lsof
-      - mc                         # https://midnight-commander.org/
-      - mosh                       # https://github.com/mobile-shell/mosh
+      - mc # https://midnight-commander.org/
+      - mosh # https://github.com/mobile-shell/mosh
       - ncdu
       - neofetch
       - net-tools
-      - "{{ nfs_client_package }}"
+      - '{{ nfs_client_package }}'
       - nano
       - nmap
       - openssh-server
-      - ranger                      # https://github.com/ranger/ranger
-      - "{{ rename_package }}"
+      - ranger # https://github.com/ranger/ranger
+      - '{{ rename_package }}'
       - rsync
       - screen
       - sshfs
       - tilix
-      - tmux                         # https://github.com/tmux/tmux/wiki # https://www.redhat.com/sysadmin/introduction-tmux-linux #TODO: learn
+      - tmux # https://github.com/tmux/tmux/wiki # https://www.redhat.com/sysadmin/introduction-tmux-linux #TODO: learn
       - traceroute
-      - "{{ vim_package }}"
+      - '{{ vim_package }}'
       - wget
       - whois
       - zsh
-
 
 - name: system setup | utilities | install man-pages (arch)
   tags: packages,system,settings
@@ -61,8 +60,6 @@
   get_url:
     url: https://starship.rs/presets/toml/no-empty-icons.toml
     dest: /home/example_user/.config/starship.toml
-
-
 # - name: system setup | utilities | install utility packages [non-apt]
 #   tags: packages,system,settings
 #   # install Starship
