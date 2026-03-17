@@ -6,7 +6,7 @@
       - extremetuxracer
       - frozen-bubble
       - gnome-chess
-      - "{{ nethack_package }}"
+      - '{{ nethack_package }}'
       - supertux
       - supertuxkart
       - wesnoth

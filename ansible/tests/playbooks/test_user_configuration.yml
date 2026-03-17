@@ -5,7 +5,7 @@
   connection: local
   gather_facts: yes
   become: no
-  
+
   vars:
     # Test with mock user configurations
     test_user_configs:
@@ -15,14 +15,14 @@
         config_profile: nheaps
       - system_user: root
         config_profile: root
-  
+
   vars_files:
     - ../../roles/users/defaults/main.yml
-  
+
   tasks:
     - name: Test profile resolution for each user
       vars:
-        resolved_profiles: "{{ config_profiles | resolve_user_inheritance }}"
+        resolved_profiles: '{{ config_profiles | resolve_user_inheritance }}'
       debug:
         msg: |
           User: {{ item.system_user }}
@@ -31,15 +31,15 @@
           Shell: {{ item.shell | default(resolved_profiles[item.config_profile].shell) | default(default_user_shell) }}
           Groups: {{ item.groups | default(resolved_profiles[item.config_profile].groups) | default(default_user_groups) }}
           Configs: {{ item.configs | default(resolved_profiles[item.config_profile].configs) | default([]) }}
-      loop: "{{ test_user_configs }}"
+      loop: '{{ test_user_configs }}'
       tags: [users]
 
     - name: Verify file paths would be created correctly
       vars:
-        resolved_profiles: "{{ config_profiles | resolve_user_inheritance }}"
+        resolved_profiles: '{{ config_profiles | resolve_user_inheritance }}'
         username: "{{ item.system_user | regex_replace('^test_', '') }}"
-        profile: "{{ item.config_profile }}"
-        user_configs: "{{ item.configs | default(resolved_profiles[item.config_profile].configs) | default([]) }}"
+        profile: '{{ item.config_profile }}'
+        user_configs: '{{ item.configs | default(resolved_profiles[item.config_profile].configs) | default([]) }}'
       debug:
         msg: |
           Would create for {{ username }}:
@@ -47,7 +47,7 @@
           - SSH dir: {{ '/root' if username == 'root' else '/home/' + username }}/.ssh
           - Config files from: roles/users/files/{{ profile }}/
           - Configs to apply: {{ user_configs }}
-      loop: "{{ test_user_configs }}"
+      loop: '{{ test_user_configs }}'
       when: item.system_user != 'root'
       tags: [paths]
 
@@ -55,7 +55,7 @@
       assert:
         that:
           - "'root' in config_profiles"
-          - "config_profiles.root.configs is defined"
-        fail_msg: "Root profile is not properly configured"
-        success_msg: "Root profile is correctly configured"
+          - 'config_profiles.root.configs is defined'
+        fail_msg: 'Root profile is not properly configured'
+        success_msg: 'Root profile is correctly configured'
       tags: [root]

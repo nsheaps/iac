@@ -150,7 +150,6 @@
     - k8s_worker is defined
     - k8s_worker == true
 
-
 # minecraft
 - name: ufw | minecraft | allow server
   tags: ufw
@@ -162,7 +161,6 @@
   when:
     - minecraft_server is defined
     - minecraft_server == true
-
 
 # nrpe
 - name: ufw | nrpe | allow nrpe from utility server (internal)

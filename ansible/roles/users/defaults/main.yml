@@ -15,14 +15,14 @@ user_configs: []
 # Default shell for users
 default_user_shell: /bin/bash
 
-# Default groups for regular users  
+# Default groups for regular users
 default_user_groups:
   - sudo
   - docker
 
 # Configuration profile defaults
 # These define the default values for each configuration profile
-# 
+#
 # Inheritance Support:
 # Profiles can inherit from other profiles using the 'inherits_from' field.
 # Child profiles merge with parent profiles, with child values taking precedence.
@@ -34,15 +34,15 @@ default_user_groups:
 #     shell: /bin/bash
 #     groups: [users]
 #     configs: [bash, git]
-#   
+#
 #   developer:
 #     inherits_from: base_user
-#     groups: [docker, sudo]  # Final: [users, docker, sudo]  
+#     groups: [docker, sudo]  # Final: [users, docker, sudo]
 #     configs: [ssh, tmux]    # Final: [bash, git, ssh, tmux]
 #
 config_profiles:
   nsheaps:
-    full_name: "Nathan Heaps"
+    full_name: 'Nathan Heaps'
     email: nsheaps@gmail.com
     shell: /bin/zsh
     groups:
@@ -63,14 +63,14 @@ config_profiles:
       - tmux
       - vim
       - zsh
-  
+
   nheaps:
     inherits_from: nsheaps
-    full_name: "Nathan Heaps"
+    full_name: 'Nathan Heaps'
     email: nheaps@gather.town
-  
+
   root:
-    full_name: "root"
+    full_name: 'root'
     email: root@localhost
     shell: /bin/bash
     groups: []
@@ -79,13 +79,13 @@ config_profiles:
       - tmux
       - vim
       - zsh
-  
+
   example_user:
-    full_name: "Example User"
+    full_name: 'Example User'
     email: user@example.com
     shell: /bin/bash
     groups:
       - sudo
       - docker
     configs:
-      - all  # Include all configs from example_user directory
+      - all # Include all configs from example_user directory

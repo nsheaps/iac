@@ -5,6 +5,7 @@ This role configures a system for automated provisioning using ansible-pull.
 ## Overview
 
 The ansible-pull role sets up:
+
 - A dedicated ansible user for running ansible-pull
 - Cron jobs for periodic provisioning
 - Logging and log rotation
@@ -30,34 +31,34 @@ None - all variables have sensible defaults.
 
 ```yaml
 # User configuration
-ansible_pull_user: ansible  # User that runs ansible-pull
+ansible_pull_user: ansible # User that runs ansible-pull
 
 # Repository settings
-ansible_pull_repo: "https://github.com/nsheaps/iac.git"
+ansible_pull_repo: 'https://github.com/nsheaps/iac.git'
 ansible_pull_branch: main
-ansible_pull_directory: ansible  # Subdirectory within the repo containing ansible files
+ansible_pull_directory: ansible # Subdirectory within the repo containing ansible files
 
 # Scheduling (cron format)
-ansible_pull_cron_minute: "*/30"  # Every 30 minutes
-ansible_pull_cron_hour: "*"
+ansible_pull_cron_minute: '*/30' # Every 30 minutes
+ansible_pull_cron_hour: '*'
 
 # Enable/disable ansible-pull
 ansible_pull_enabled: true
 
 # Monitoring (optional)
-ansible_pull_healthcheck_url: ""  # healthchecks.io URL
+ansible_pull_healthcheck_url: '' # healthchecks.io URL
 
 # Vault (optional)
-ansible_pull_vault_password_file: ""  # Path to vault password
+ansible_pull_vault_password_file: '' # Path to vault password
 
 # Logging
 ansible_pull_logfile: /var/log/ansible-pull.log
 
 # System integration
-ansible_pull_use_inhibit: true  # Prevent sleep during runs
+ansible_pull_use_inhibit: true # Prevent sleep during runs
 
 # Additional options
-ansible_pull_extra_opts: "-o"  # Only run on changes
+ansible_pull_extra_opts: '-o' # Only run on changes
 ```
 
 ## Usage
@@ -77,10 +78,10 @@ ansible_pull_extra_opts: "-o"  # Only run on changes
   roles:
     - role: ansible-pull
       vars:
-        ansible_pull_repo: "https://github.com/myorg/ansible.git"
-        ansible_pull_cron_minute: "0"
-        ansible_pull_cron_hour: "*/4"
-        ansible_pull_healthcheck_url: "https://hc-ping.com/YOUR-UUID"
+        ansible_pull_repo: 'https://github.com/myorg/ansible.git'
+        ansible_pull_cron_minute: '0'
+        ansible_pull_cron_hour: '*/4'
+        ansible_pull_healthcheck_url: 'https://hc-ping.com/YOUR-UUID'
 ```
 
 ### Manual Provisioning

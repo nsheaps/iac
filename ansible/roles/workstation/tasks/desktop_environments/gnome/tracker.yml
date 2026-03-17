@@ -11,15 +11,15 @@
   tags: gnome,tracker
   become_user: example_user
   dconf:
-    key: "/org/freedesktop/tracker/miner/files/index-on-battery"
-    value: "false"
+    key: '/org/freedesktop/tracker/miner/files/index-on-battery'
+    value: 'false'
 
 # Set ignored directories for Tracker
 - name: gnome | tracker | set ignored directories
   tags: gnome,tracker
   become_user: example_user
   dconf:
-    key: "/org/freedesktop/tracker/miner/files/ignored-directories"
+    key: '/org/freedesktop/tracker/miner/files/ignored-directories'
     value: "['po', 'CVS', 'core-dumps', '/home/example_user/downloads', 'lost+found', '/mnt/freenas']"
   notify:
     - gnome_tracker_clean_cache

@@ -6,18 +6,18 @@
       - eog
       - dconf-editor
       - file-roller
-      - "{{ gdm_package }}"
+      - '{{ gdm_package }}'
       - gedit
       - gnome-backgrounds
       - gnome-books
       - gnome-boxes
       - gnome-control-center
       - gnome-disk-utility
-#      - gnome-documents
+      #      - gnome-documents
       - gtk2-engines-murrine
       - gnome-icon-theme
-#      - gnome-music
-#      - gnome-photos
+      #      - gnome-music
+      #      - gnome-photos
       - gnome-power-manager
       - gnome-remote-desktop
       - gnome-shell
@@ -33,7 +33,7 @@
   tags: gnome,gnome-packages
   package:
     name:
-    - gnome-software-plugin-flatpak
+      - gnome-software-plugin-flatpak
   when: ansible_distribution in ["Debian", "Ubuntu"]
 
 # It appears as though Debian and Ubuntu place GNOME support for openvpn in a separate package

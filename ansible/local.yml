@@ -4,7 +4,7 @@
   tags: always
   become: true
   become_method: sudo
-  
+
   pre_tasks:
     - name: pre-run | update package cache (arch)
       tags: always, arch
@@ -21,11 +21,11 @@
     - name: pre-run | update package cache (fedora)
       tags: always, fedora
       dnf:
-        name: "*"
+        name: '*'
         state: latest
       changed_when: False
       when: ansible_distribution == "Fedora"
-      
+
 # run roles
 - hosts: all
   tags: users
@@ -57,8 +57,8 @@
   roles:
     - role: say-hello
       vars:
-        title: "Ansible Provisioning Complete"
-        message: "{{ ansible_hostname }} has been updated by ansible-pull"
+        title: 'Ansible Provisioning Complete'
+        message: '{{ ansible_hostname }} has been updated by ansible-pull'
 
 - hosts: server
   tags: server
@@ -98,7 +98,6 @@
         - task_failed == true
 
   post_tasks:
-
     - name: Suggest login/logout to complete Gnome configuration
       ansible.builtin.debug:
         msg: 'Please logout& login to complete the configuration.'

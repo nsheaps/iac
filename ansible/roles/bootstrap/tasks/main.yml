@@ -10,7 +10,7 @@
 
 - name: Fail if 1Password CLI is not installed
   fail:
-    msg: "1Password CLI (op) is not installed. Please run the bootstrap script first."
+    msg: '1Password CLI (op) is not installed. Please run the bootstrap script first.'
   when: op_check.rc != 0
 
 - name: Check 1Password authentication
@@ -21,7 +21,7 @@
 
 - name: Fail if not authenticated with 1Password
   fail:
-    msg: "Not authenticated with 1Password. Please run: eval $(op signin)"
+    msg: 'Not authenticated with 1Password. Please run: eval $(op signin)'
   when: op_auth.rc != 0
 
 - name: Create temporary directory for secrets
@@ -39,7 +39,7 @@
 
 - name: Deploy SSH known hosts
   copy:
-    content: "{{ known_hosts_content.stdout }}"
+    content: '{{ known_hosts_content.stdout }}'
     dest: /etc/ssh/ssh_known_hosts
     owner: root
     group: root
@@ -77,23 +77,23 @@
         owner: ansible
         group: ansible
         mode: '0700'
-    
+
     - name: Deploy private key
       copy:
-        src: "{{ temp_dir.path }}/ansible_id_ed25519"
+        src: '{{ temp_dir.path }}/ansible_id_ed25519'
         dest: /home/ansible/.ssh/id_ed25519
         owner: ansible
         group: ansible
         mode: '0600'
-    
+
     - name: Deploy public key
       copy:
-        src: "{{ temp_dir.path }}/ansible_id_ed25519.pub"
+        src: '{{ temp_dir.path }}/ansible_id_ed25519.pub'
         dest: /home/ansible/.ssh/id_ed25519.pub
         owner: ansible
         group: ansible
         mode: '0644'
-    
+
     - name: Add public key to authorized_keys
       authorized_key:
         user: ansible
@@ -107,32 +107,32 @@
   block:
     - name: Ensure user .ssh directory exists
       file:
-        path: "/home/{{ running_as }}/.ssh"
+        path: '/home/{{ running_as }}/.ssh'
         state: directory
-        owner: "{{ running_as }}"
-        group: "{{ running_as }}"
+        owner: '{{ running_as }}'
+        group: '{{ running_as }}'
         mode: '0700'
-    
+
     - name: Copy ansible SSH key for current user
       copy:
-        src: "{{ temp_dir.path }}/ansible_id_ed25519"
-        dest: "/home/{{ running_as }}/.ssh/ansible_id_ed25519"
-        owner: "{{ running_as }}"
-        group: "{{ running_as }}"
+        src: '{{ temp_dir.path }}/ansible_id_ed25519'
+        dest: '/home/{{ running_as }}/.ssh/ansible_id_ed25519'
+        owner: '{{ running_as }}'
+        group: '{{ running_as }}'
         mode: '0600'
-    
+
     - name: Copy ansible public key for current user
       copy:
-        src: "{{ temp_dir.path }}/ansible_id_ed25519.pub"
-        dest: "/home/{{ running_as }}/.ssh/ansible_id_ed25519.pub"
-        owner: "{{ running_as }}"
-        group: "{{ running_as }}"
+        src: '{{ temp_dir.path }}/ansible_id_ed25519.pub'
+        dest: '/home/{{ running_as }}/.ssh/ansible_id_ed25519.pub'
+        owner: '{{ running_as }}'
+        group: '{{ running_as }}'
         mode: '0644'
 
 # Clean up temporary files
 - name: Remove temporary directory
   file:
-    path: "{{ temp_dir.path }}"
+    path: '{{ temp_dir.path }}'
     state: absent
   when: temp_dir.path is defined
 
@@ -161,20 +161,20 @@
 
 - name: Save host keys to file for later commit
   copy:
-    content: "{{ host_keys.stdout }}"
-    dest: "{{ root_dir }}/host_keys_{{ hostname.stdout }}.txt"
-    owner: "{{ running_as }}"
-    group: "{{ running_as }}"
+    content: '{{ host_keys.stdout }}'
+    dest: '{{ root_dir }}/host_keys_{{ hostname.stdout }}.txt'
+    owner: '{{ running_as }}'
+    group: '{{ running_as }}'
     mode: '0644'
 
 - name: Display next steps
   debug:
     msg:
-      - "Bootstrap initial setup complete!"
-      - "Next steps:"
-      - "1. Review and commit the host_vars file for {{ hostname.stdout }}"
-      - "2. Add the collected SSH host keys to your central store"
-      - "3. Run ansible-pull to complete system configuration"
-      - ""
-      - "To run ansible-pull manually:"
+      - 'Bootstrap initial setup complete!'
+      - 'Next steps:'
+      - '1. Review and commit the host_vars file for {{ hostname.stdout }}'
+      - '2. Add the collected SSH host keys to your central store'
+      - '3. Run ansible-pull to complete system configuration'
+      - ''
+      - 'To run ansible-pull manually:'
       - "  sudo ansible-pull -U {{ ansible_pull_repo | default('https://github.com/nsheaps/iac.git') }} -C {{ ansible_pull_branch | default('main') }} -i ansible/hosts ansible/local.yml"

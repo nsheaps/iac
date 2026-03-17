@@ -2,7 +2,7 @@
 - name: software | todoist | install package
   tags: packages,snap,todoist,workstation-packages
   snap:
-    name:  todoist
+    name: todoist
     state: present
   when:
     - ansible_distribution != "Archlinux"

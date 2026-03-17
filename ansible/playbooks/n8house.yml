@@ -9,8 +9,8 @@
   roles:
     - ../roles/say-hello
   vars:
-    title: "ansible@{{ git_repo }}@{{ git_short_sha }}"
-    message: "{{ git_commit_subject }}"
+    title: 'ansible@{{ git_repo }}@{{ git_short_sha }}'
+    message: '{{ git_commit_subject }}'
 - name: Apply always-on power settings
   hosts: n8server
   roles:

@@ -25,6 +25,6 @@
 - name: ansible job failed, clear cache later on to trigger another provision run
   become: true
   at:
-    command: "if ! pgrep -f ansible-pull >/dev/null; then rm -rf /home/ansible/.ansible; fi"
+    command: 'if ! pgrep -f ansible-pull >/dev/null; then rm -rf /home/ansible/.ansible; fi'
     count: 60
     units: minutes

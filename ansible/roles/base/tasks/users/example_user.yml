@@ -11,8 +11,8 @@
     group: example_user
     groups: adm,ansible,{{ sudo_group }}
     state: present
-    comment: "example user"
-    password: "{{ example_user_passwd }}"
+    comment: 'example user'
+    password: '{{ example_user_passwd }}'
     shell: /bin/zsh # /bin/bash
 
 - name: users | example_user | example_user | add sudoers file
@@ -27,19 +27,19 @@
 - name: users | example_user | create .ssh directory
   tags: dotfiles,example_user,ssh,users
   file:
-    path: "{{ item.dir }}"
+    path: '{{ item.dir }}'
     state: directory
     owner: example_user
     group: example_user
     mode: 0700
   with_items:
-    - { dir: "/home/example_user/.ssh" }
+    - { dir: '/home/example_user/.ssh' }
 
 - name: users | example_user | add public key
   tags: dotfiles,example_user,ssh,ssh-keys,users
   authorized_key:
     user: example_user
-    key: "{{ item }}"
+    key: '{{ item }}'
   with_file:
     - users/example_user/ssh/example_user_id_ed25519.pub
 
@@ -52,20 +52,20 @@
     group: example_user
     mode: 0700
   with_items:
-    - { dir: ".bash" }
-    - { dir: ".config" }
-    - { dir: ".config/htop" }
-    - { dir: ".config/mc" }
-    - { dir: ".tmux" }
-    - { dir: ".tmux/config" }
-    - { dir: ".tmux/plugins" }
+    - { dir: '.bash' }
+    - { dir: '.config' }
+    - { dir: '.config/htop' }
+    - { dir: '.config/mc' }
+    - { dir: '.tmux' }
+    - { dir: '.tmux/config' }
+    - { dir: '.tmux/plugins' }
     - { dir: '.vim' }
     - { dir: '.vim/autoload' }
     - { dir: '.vim/bundle' }
     - { dir: '.vim/colors' }
     - { dir: '.vim/ftplugin' }
-    - { dir: ".zsh" }
-    - { dir: ".fonts" }
+    - { dir: '.zsh' }
+    - { dir: '.fonts' }
 
 - name: users | example_user | copy tmux config (server version)
   tags: dotfiles,users,example_user,tmux,users,vim,zsh
@@ -96,18 +96,18 @@
     group: example_user
     mode: 0600
   with_items:
-    - { src: "bash/bash_aliases", dest: ".bash/bash_aliases" }
-    - { src: "bash/bash_profile", dest: ".bash_profile" }
-    - { src: "bash/bash_prompt", dest: ".bash/bash_prompt" }
-    - { src: "bash/bash_functions", dest: ".bash/bash_functions" }
-    - { src: "bash/bashrc", dest: ".bashrc" }
-    - { src: "bash/profile", dest: ".profile" }
-    - { src: "git/gitconfig", dest: ".gitconfig" }
-    - { src: "htop/htoprc", dest: ".config/htop/htoprc" }
-    - { src: "inputrc", dest: ".inputrc" }
-    - { src: "mc/mc.ini", dest: ".config/mc/ini" }
-    - { src: "vim/vimrc", dest: ".vimrc" }
-    - { src: "zsh/zshrc", dest: ".zshrc" }
+    - { src: 'bash/bash_aliases', dest: '.bash/bash_aliases' }
+    - { src: 'bash/bash_profile', dest: '.bash_profile' }
+    - { src: 'bash/bash_prompt', dest: '.bash/bash_prompt' }
+    - { src: 'bash/bash_functions', dest: '.bash/bash_functions' }
+    - { src: 'bash/bashrc', dest: '.bashrc' }
+    - { src: 'bash/profile', dest: '.profile' }
+    - { src: 'git/gitconfig', dest: '.gitconfig' }
+    - { src: 'htop/htoprc', dest: '.config/htop/htoprc' }
+    - { src: 'inputrc', dest: '.inputrc' }
+    - { src: 'mc/mc.ini', dest: '.config/mc/ini' }
+    - { src: 'vim/vimrc', dest: '.vimrc' }
+    - { src: 'zsh/zshrc', dest: '.zshrc' }
     # - { src: 'starship/starship.toml', dest: '.config/starship.toml' } #todo:review or remove
 
 - name: users | example_user | set config for starship
@@ -149,19 +149,19 @@
     group: example_user
     mode: 0600
   with_items:
-    - { src: "aliases.zsh" }
-    - { src: "bindkey.zsh" }
-    - { src: "completion.zsh" }
-    - { src: "exports.zsh" }
-    - { src: "functions.zsh" }
-    - { src: "history.zsh" }
-    - { src: "path.zsh" }
-    - { src: "plugins.zsh" }
-    - { src: "prompt.zsh" }
-    - { src: "setopt.zsh" }
-    - { src: "theming.zsh" }
+    - { src: 'aliases.zsh' }
+    - { src: 'bindkey.zsh' }
+    - { src: 'completion.zsh' }
+    - { src: 'exports.zsh' }
+    - { src: 'functions.zsh' }
+    - { src: 'history.zsh' }
+    - { src: 'path.zsh' }
+    - { src: 'plugins.zsh' }
+    - { src: 'prompt.zsh' }
+    - { src: 'setopt.zsh' }
+    - { src: 'theming.zsh' }
 
-- name: users | example_user | copy vim ftype files  #TODO: might be needed -VIM
+- name: users | example_user | copy vim ftype files #TODO: might be needed -VIM
   tags: dotfiles,example_user,users,vim
   copy:
     src: users/example_user/vim/{{ item.src }}
@@ -179,7 +179,7 @@
     - { src: 'sql.vim' }
     - { src: 'xml.vim' }
 
-- name: users | example_user | copy vim color files  #TODO: might be needed -VIM
+- name: users | example_user | copy vim color files #TODO: might be needed -VIM
   tags: dotfiles,example_user,users,vim
   copy:
     src: users/example_user/vim/{{ item.src }}
@@ -194,40 +194,67 @@
     - { src: 'xoria256.vim' }
     - { src: 'zenburn.vim' }
 
-- name: users | example_user | install pathogen  #TODO: might be needed -VIM
+- name: users | example_user | install pathogen #TODO: might be needed -VIM
   tags: dotfiles,example_user,users,vim
   copy:
     src: users/example_user/vim/{{ item.src }}
-    dest: "{{ item.dest }}"
+    dest: '{{ item.dest }}'
     owner: example_user
     group: example_user
     mode: 0700
   with_items:
-    - { src: 'pathogen.vim', dest: '/home/example_user/.vim/autoload/pathogen.vim' }
+    - {
+        src: 'pathogen.vim',
+        dest: '/home/example_user/.vim/autoload/pathogen.vim',
+      }
 
 - name: users | example_user | checkout git repositories #TODO: might be needed -VIM
   tags: git,users,example_user
   become: yes
   git:
-    repo: "{{ item.repo }}"
-    dest: "{{ item.dest }}"
+    repo: '{{ item.repo }}'
+    dest: '{{ item.dest }}'
     force: yes
   with_items:
-    - { repo: 'https://github.com/ctrlpvim/ctrlp.vim.git', dest: '/home/example_user/.vim/bundle/ctrlp.vim' }
-    - { repo: 'https://github.com/davidhalter/jedi-vim.git', dest: '/home/example_user/.vim/bundle/jedi-vim' }
-    - { repo: 'https://github.com/pearofducks/ansible-vim', dest: '/home/example_user/.vim/bundle/ansible-vim' }
-    - { repo: 'https://github.com/rhysd/vim-grammarous.git', dest: '/home/example_user/.vim/bundle/vim-grammarous' }
-    - { repo: 'https://github.com/ron89/thesaurus_query.vim', dest: '/home/example_user/.vim/bundle/thesaurus_query' }
-    - { repo: 'https://github.com/scrooloose/nerdtree.git', dest: '/home/example_user/.vim/bundle/nerdtree' }
-    - { repo: 'https://github.com/tpope/vim-obsession.git', dest: '/home/example_user/.vim/bundle/vim-obsession' }
-    - { repo: 'https://github.com/vim-syntastic/syntastic.git', dest: '/home/example_user/.vim/bundle/syntastic' }
+    - {
+        repo: 'https://github.com/ctrlpvim/ctrlp.vim.git',
+        dest: '/home/example_user/.vim/bundle/ctrlp.vim',
+      }
+    - {
+        repo: 'https://github.com/davidhalter/jedi-vim.git',
+        dest: '/home/example_user/.vim/bundle/jedi-vim',
+      }
+    - {
+        repo: 'https://github.com/pearofducks/ansible-vim',
+        dest: '/home/example_user/.vim/bundle/ansible-vim',
+      }
+    - {
+        repo: 'https://github.com/rhysd/vim-grammarous.git',
+        dest: '/home/example_user/.vim/bundle/vim-grammarous',
+      }
+    - {
+        repo: 'https://github.com/ron89/thesaurus_query.vim',
+        dest: '/home/example_user/.vim/bundle/thesaurus_query',
+      }
+    - {
+        repo: 'https://github.com/scrooloose/nerdtree.git',
+        dest: '/home/example_user/.vim/bundle/nerdtree',
+      }
+    - {
+        repo: 'https://github.com/tpope/vim-obsession.git',
+        dest: '/home/example_user/.vim/bundle/vim-obsession',
+      }
+    - {
+        repo: 'https://github.com/vim-syntastic/syntastic.git',
+        dest: '/home/example_user/.vim/bundle/syntastic',
+      }
   notify: update_vim_bundle_perms
 
 - name: users | example_user | download fonts
   tags: fonts,example_user,users,nerdfonts
   unarchive:
     src: https://github.com/ryanoasis/nerd-fonts/releases/download/v3.0.2/{{  item }}.zip
-    dest: "/home/example_user/.fonts/"
+    dest: '/home/example_user/.fonts/'
     remote_src: yes
   with_items:
     - Hack

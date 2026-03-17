@@ -1,14 +1,14 @@
 - name: system setup | openssh | install or update daemon package
   tags: openssh,ssh,system,settings
   package:
-    name: "{{ openssh_package }}"
+    name: '{{ openssh_package }}'
     state: latest
   notify: restart_sshd
 
 - name: system setup | openssh | enable daemon
   tags: openssh,ssh,system,settings
   service:
-    name: "{{ openssh_service }}"
+    name: '{{ openssh_service }}'
     enabled: yes
     state: started
 

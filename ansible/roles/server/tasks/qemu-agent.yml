@@ -11,7 +11,7 @@
 - name: qemu-agent | enable qemu agent daemon
   tags: nagios,nrpe
   service:
-    name: "{{ qemu_agent_service }}"
+    name: '{{ qemu_agent_service }}'
     enabled: yes
     state: started
   when: proxmox_instance is defined and proxmox_instance == true

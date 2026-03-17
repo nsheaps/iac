@@ -8,8 +8,8 @@
   tags: ansible,ansible-setup,packages
   package:
     name:
-      - "{{ dconf_package }}"
-      - "{{ python_psutil_package }}"
+      - '{{ dconf_package }}'
+      - '{{ python_psutil_package }}'
 
 # Note: For Arch, the requirement is met by a dependency of systemd, only necessary on Debian-based
 - name: ansible setup | install acl package

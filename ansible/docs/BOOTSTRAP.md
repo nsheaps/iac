@@ -5,6 +5,7 @@ This guide explains how to bootstrap a new host to join the ansible-managed infr
 ## Overview
 
 The bootstrap process sets up a new host with:
+
 - Required packages (ansible, git, 1Password CLI, etc.)
 - SSH configuration and keys
 - Ansible user for automation
@@ -25,6 +26,7 @@ Before bootstrapping, ensure you have the following items in 1Password:
 ### GitHub Access
 
 You'll need:
+
 - A GitHub account with access to the ansible repository
 - GitHub CLI authentication or a personal access token
 
@@ -41,6 +43,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/nsheaps/iac/main/ansible/bin
 ### 1. Platform Detection
 
 The bootstrap script automatically detects:
+
 - Operating system (macOS, Linux, WSL)
 - Linux distribution (Ubuntu, Debian, Fedora, Arch, etc.)
 - Desktop environment (for workstation vs server classification)
@@ -48,6 +51,7 @@ The bootstrap script automatically detects:
 ### 2. Package Installation
 
 Based on your platform, the script installs:
+
 - **Core tools**: git, curl, ca-certificates
 - **Ansible**: For configuration management
 - **1Password CLI**: For secret management
@@ -58,6 +62,7 @@ Based on your platform, the script installs:
 ### 3. Service Configuration
 
 The script configures:
+
 - **SSH** (Optional): Only if you need remote access - asks before setup
 - **1Password**: Authenticates with your 1Password account
 - **GitHub**: Authenticates with GitHub for repository access
@@ -65,6 +70,7 @@ The script configures:
 ### 4. Repository Setup
 
 The script:
+
 - Clones the iac repository to `~/src/iac`
 - Generates a host_vars file for your hostname in `ansible/host_vars/`
 - Adds your host to the `ansible/hosts` inventory
@@ -72,6 +78,7 @@ The script:
 ### 5. Bootstrap Playbook
 
 Runs the bootstrap playbook which:
+
 - Retrieves SSH keys from 1Password
 - Sets up the ansible user (if not exists)
 - Collects SSH host keys for central storage
@@ -80,6 +87,7 @@ Runs the bootstrap playbook which:
 ### 6. First Ansible Pull
 
 Optionally runs the first ansible-pull to:
+
 - Apply all role configurations
 - Set up scheduled pulls (every 30 minutes)
 - Configure users, packages, and services
@@ -89,11 +97,13 @@ Optionally runs the first ansible-pull to:
 ### After Bootstrap
 
 1. **Review the generated host_vars file**:
+
    ```bash
    cat ~/src/iac/ansible/host_vars/$(hostname -s).yml
    ```
 
 2. **Commit your changes**:
+
    ```bash
    cd ~/src/iac
    git add ansible/host_vars/$(hostname -s).yml
@@ -122,16 +132,19 @@ Optionally runs the first ansible-pull to:
 ### Linux Distributions
 
 #### Ubuntu/Debian
+
 - Uses apt package manager
 - Installs from official repositories
 - 1Password CLI from official apt source
 
 #### Fedora/RHEL/CentOS
+
 - Uses dnf package manager
 - Installs from official repositories
 - 1Password CLI from official rpm repository
 
 #### Arch Linux
+
 - Uses pacman and AUR (via yay)
 - Community packages from AUR
 
@@ -140,6 +153,7 @@ Optionally runs the first ansible-pull to:
 ### 1Password Authentication Issues
 
 If you see "Not authenticated with 1Password", run:
+
 ```bash
 eval $(op signin)
 ```
@@ -147,12 +161,14 @@ eval $(op signin)
 ### SSH Connection Issues
 
 Ensure SSH is enabled:
+
 - **macOS**: System Preferences > Sharing > Remote Login
 - **Linux**: `sudo systemctl enable --now ssh`
 
 ### Repository Access Issues
 
 If you can't access the repository:
+
 1. Check GitHub authentication: `gh auth status`
 2. Re-authenticate if needed: `gh auth login`
 
@@ -167,6 +183,7 @@ If you can't access the repository:
 ### Generated host_vars
 
 Located at `ansible/host_vars/$(hostname -s).yml`:
+
 ```yaml
 ---
 # Configuration for hostname
@@ -174,8 +191,8 @@ Located at `ansible/host_vars/$(hostname -s).yml`:
 
 # Ansible-pull configuration
 ansible_pull_enabled: true
-ansible_pull_cron_minute: "*/30"
-ansible_pull_cron_hour: "*"
+ansible_pull_cron_minute: '*/30'
+ansible_pull_cron_hour: '*'
 
 # User configuration
 user_configs:
@@ -188,6 +205,7 @@ user_configs:
 ### Inventory Updates
 
 Your host is added to `ansible/hosts` under the appropriate group:
+
 - `[workstation]` - For desktop systems
 - `[server]` - For headless systems
 
@@ -210,6 +228,7 @@ After successful bootstrap:
 ## Support
 
 For issues or questions:
+
 - Check the [main README](../README.md)
 - Review ansible logs: `/var/log/ansible-pull.log`
 - Open an issue on GitHub

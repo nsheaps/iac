@@ -11,8 +11,8 @@
     group: root
     mode: 0700
   with_items:
-      - { dir: '.vim' }
-      - { dir: '.vim/colors' }
+    - { dir: '.vim' }
+    - { dir: '.vim/colors' }
   tags: dotfiles
 
 - name: users | root | copy dotfiles
@@ -23,11 +23,11 @@
     group: root
     mode: 0600
   with_items:
-      - { src: 'bash/bashrc', dest: '.bashrc' }
-      - { src: 'bash/bash_profile', dest: '.bash_profile' }
-      - { src: 'bash/profile', dest: '.profile' }
-      - { src: 'tmux/tmux.conf', dest: '.tmux.conf' }
-      - { src: 'vim/vimrc', dest: '.vimrc' }
-      - { src: 'vim/xoria256.vim', dest: '.vim/colors/xoria256.vim' }
-      - { src: 'zsh/zshrc', dest: '.zshrc' }
+    - { src: 'bash/bashrc', dest: '.bashrc' }
+    - { src: 'bash/bash_profile', dest: '.bash_profile' }
+    - { src: 'bash/profile', dest: '.profile' }
+    - { src: 'tmux/tmux.conf', dest: '.tmux.conf' }
+    - { src: 'vim/vimrc', dest: '.vimrc' }
+    - { src: 'vim/xoria256.vim', dest: '.vim/colors/xoria256.vim' }
+    - { src: 'zsh/zshrc', dest: '.zshrc' }
   tags: dotfiles

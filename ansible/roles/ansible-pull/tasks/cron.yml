@@ -9,30 +9,30 @@
 
 - name: ansible-pull | cron | schedule automatic ansible provisioning
   cron:
-    name: "ansible provision"
-    user: "{{ ansible_pull_user }}"
-    hour: "{{ ansible_pull_cron_hour }}"
-    minute: "{{ ansible_pull_cron_minute }}"
-    job: "/usr/local/bin/ansible-provision > /dev/null 2>&1"
+    name: 'ansible provision'
+    user: '{{ ansible_pull_user }}'
+    hour: '{{ ansible_pull_cron_hour }}'
+    minute: '{{ ansible_pull_cron_minute }}'
+    job: '/usr/local/bin/ansible-provision > /dev/null 2>&1'
     state: "{{ 'present' if ansible_pull_enabled else 'absent' }}"
 
 - name: ansible-pull | cron | schedule ansible cleanup at boot
   cron:
-    name: "ansible cleanup at boot"
-    user: "{{ ansible_pull_user }}"
+    name: 'ansible cleanup at boot'
+    user: '{{ ansible_pull_user }}'
     special_time: reboot
-    job: "/bin/rm -rf /home/{{ ansible_pull_user }}/.ansible"
+    job: '/bin/rm -rf /home/{{ ansible_pull_user }}/.ansible'
     state: "{{ 'present' if ansible_pull_enabled else 'absent' }}"
 
 - name: ansible-pull | cron | add healthcheck ping (if configured)
   cron:
-    name: "ansible provision healthcheck"
-    user: "{{ ansible_pull_user }}"
-    hour: "{{ ansible_pull_cron_hour }}"
-    minute: "{{ ansible_pull_cron_minute }}"
-    job: "/usr/local/bin/ansible-provision > /dev/null 2>&1 && curl -fsS --retry 3 {{ ansible_pull_healthcheck_url }} > /dev/null"
+    name: 'ansible provision healthcheck'
+    user: '{{ ansible_pull_user }}'
+    hour: '{{ ansible_pull_cron_hour }}'
+    minute: '{{ ansible_pull_cron_minute }}'
+    job: '/usr/local/bin/ansible-provision > /dev/null 2>&1 && curl -fsS --retry 3 {{ ansible_pull_healthcheck_url }} > /dev/null'
     state: present
-  when: 
+  when:
     - ansible_pull_enabled
     - ansible_pull_healthcheck_url is defined
     - ansible_pull_healthcheck_url | length > 0

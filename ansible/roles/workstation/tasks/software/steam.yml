@@ -37,10 +37,10 @@
 - name: steam | add multiarch (debian, ubuntu)
   tags: steam,steam,multiarch
   lineinfile:
-      dest: /var/lib/dpkg/arch
-      regexp: "^i386"
-      line: "i386"
-      create: yes
+    dest: /var/lib/dpkg/arch
+    regexp: '^i386'
+    line: 'i386'
+    create: yes
   when:
     - ansible_distribution in ['Debian', 'Ubuntu']
     - steam is defined
@@ -50,10 +50,10 @@
 - name: software | steam | accept license
   tags: gaming,steam
   debconf:
-    name: "steam"
-    question: "steam/question"
-    value: "I AGREE"
-    vtype: "select"
+    name: 'steam'
+    question: 'steam/question'
+    value: 'I AGREE'
+    vtype: 'select'
   when:
     - ansible_distribution in ["Debian", "Ubuntu"]
     - steam is defined
@@ -63,7 +63,7 @@
   tags: steam,steam
   package:
     state: latest
-    name: "{{ steam_package }}"
+    name: '{{ steam_package }}'
   when:
     - steam is defined
     - steam == true

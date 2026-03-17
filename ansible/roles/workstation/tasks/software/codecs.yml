@@ -2,5 +2,5 @@
   tags: packages,system,system-packages,workstation-packages
   package:
     name:
-      - "{{ gstreamer_libav_package }}"
-      - "{{ gstreamer_plugins_bad_package }}"
+      - '{{ gstreamer_libav_package }}'
+      - '{{ gstreamer_plugins_bad_package }}'

@@ -3,8 +3,8 @@
   package:
     state: latest
     name:
-      - "{{ monitoring_plugins_package }}"
-      - "{{ nrpe_package }}"
+      - '{{ monitoring_plugins_package }}'
+      - '{{ nrpe_package }}'
   notify:
     - restart_nrpe
 
@@ -12,7 +12,7 @@
   tags: openssh,ssh,system,settings
   template:
     src: nrpe.cfg.j2
-    dest: "{{ nrpe_config_file_dest }}"
+    dest: '{{ nrpe_config_file_dest }}'
     owner: root
     group: root
     mode: 0644
@@ -21,7 +21,7 @@
 - name: nrpe | enable and start nrpe service
   tags: nagios,nrpe
   service:
-    name: "{{ nrpe_service }}"
+    name: '{{ nrpe_service }}'
     enabled: yes
     state: started
 
@@ -29,7 +29,7 @@
   tags: nagios,nrpe
   copy:
     src: nrpe/{{ item }}
-    dest: "{{ monitoring_plugins_path }}/{{ item }}"
+    dest: '{{ monitoring_plugins_path }}/{{ item }}'
     owner: root
     group: root
     mode: 0755
@@ -43,8 +43,8 @@
   tags: ansible,ansible-setup
   file:
     path: /var/log/nrpe.log
-    owner: "{{ nrpe_user }}"
-    group: "{{ nrpe_group }}"
+    owner: '{{ nrpe_user }}'
+    group: '{{ nrpe_group }}'
     mode: 0664
     state: touch
   changed_when: False

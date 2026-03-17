@@ -5,15 +5,15 @@
 ansible_pull_user: ansible
 
 # Repository configuration
-ansible_pull_repo: "https://github.com/nsheaps/iac.git"
+ansible_pull_repo: 'https://github.com/nsheaps/iac.git'
 ansible_pull_branch: main
 
 # Directory within the repository containing ansible files
 ansible_pull_directory: ansible
 
 # Cron scheduling (default: every 30 minutes)
-ansible_pull_cron_minute: "*/30"
-ansible_pull_cron_hour: "*"
+ansible_pull_cron_minute: '*/30'
+ansible_pull_cron_hour: '*'
 
 # Enable/disable ansible-pull
 ansible_pull_enabled: true
@@ -31,4 +31,4 @@ ansible_pull_logfile: /var/log/ansible-pull.log
 ansible_pull_use_inhibit: true
 
 # Additional ansible-pull options
-ansible_pull_extra_opts: "-o"  # Only run when changes detected
+ansible_pull_extra_opts: '-o' # Only run when changes detected

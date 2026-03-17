@@ -1,22 +1,22 @@
 ---
 - name: Resolve inheritance in config profiles
   set_fact:
-    resolved_config_profiles: "{{ config_profiles | resolve_user_inheritance }}"
-  when: 
+    resolved_config_profiles: '{{ config_profiles | resolve_user_inheritance }}'
+  when:
     - config_profiles is defined
     - config_profiles | length > 0
 
 - name: Configure users based on user_configs mapping
   include_tasks: configure_user.yml
   vars:
-    username: "{{ item.system_user }}"
-    profile: "{{ item.config_profile }}"
-    user_email: "{{ item.email | default(resolved_config_profiles[item.config_profile].email) }}"
-    user_full_name: "{{ item.full_name | default(resolved_config_profiles[item.config_profile].full_name) }}"
-    user_shell: "{{ item.shell | default(resolved_config_profiles[item.config_profile].shell) | default(default_user_shell) }}"
-    user_groups: "{{ item.groups | default(resolved_config_profiles[item.config_profile].groups) | default(default_user_groups) }}"
-    user_configs: "{{ item.configs | default(resolved_config_profiles[item.config_profile].configs) | default([]) }}"
-  loop: "{{ user_configs }}"
-  when: 
+    username: '{{ item.system_user }}'
+    profile: '{{ item.config_profile }}'
+    user_email: '{{ item.email | default(resolved_config_profiles[item.config_profile].email) }}'
+    user_full_name: '{{ item.full_name | default(resolved_config_profiles[item.config_profile].full_name) }}'
+    user_shell: '{{ item.shell | default(resolved_config_profiles[item.config_profile].shell) | default(default_user_shell) }}'
+    user_groups: '{{ item.groups | default(resolved_config_profiles[item.config_profile].groups) | default(default_user_groups) }}'
+    user_configs: '{{ item.configs | default(resolved_config_profiles[item.config_profile].configs) | default([]) }}'
+  loop: '{{ user_configs }}'
+  when:
     - user_configs is defined
     - user_configs | length > 0

@@ -1,10 +1,10 @@
 - name: system setup | memory | adjust current swappiness
   tags: swappiness,sysctl,system,setup
   lineinfile:
-    dest: "/etc/sysctl.conf"
+    dest: '/etc/sysctl.conf'
     create: yes
-    regexp: "swappiness ="
-    line: "vm.swappiness = 5"
+    regexp: 'swappiness ='
+    line: 'vm.swappiness = 5'
   register: swappiness
 
 - name: system setup | memory | apply swappiness

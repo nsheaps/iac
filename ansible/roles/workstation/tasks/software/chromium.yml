@@ -3,7 +3,7 @@
 - name: software | chromium | install snap package
   tags: packages,chromium,snap,workstation-packages
   snap:
-    name:  chromium
+    name: chromium
     state: present
   when:
     - ansible_distribution != "Archlinux"
@@ -13,7 +13,7 @@
 - name: software | chromium | install distro package (arch)
   tags: packages,chromium,snap,workstation-packages
   package:
-    name:  chromium
+    name: chromium
     state: latest
   when:
     - ansible_distribution == "Archlinux"

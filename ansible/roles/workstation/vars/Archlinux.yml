@@ -1,6 +1,6 @@
 autofs_master_config: /etc/autofs/auto.master
 # autofs_nfs_config: /etc/autofs/auto.nfs      #todo: might be usefull, to review
-cryptsetup_package: cryptsetup                 #todo: review -> https://gitlab.com/cryptsetup/cryptsetup
+cryptsetup_package: cryptsetup #todo: review -> https://gitlab.com/cryptsetup/cryptsetup
 cups_package: cups
 font_fira_mono_package: otf-fira-mono
 font_hack_ttf_package: ttf-hack
