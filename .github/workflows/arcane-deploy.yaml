@@ -111,7 +111,7 @@ jobs:
           set -euo pipefail
 
           # Fetch existing global variables
-          existing=$(curl -sf --max-time 30 \
+          existing=$(curl -sS --fail-with-body --max-time 30 \
             -H "X-Api-Key: ${ARCANE_API_KEY}" \
             "${ARCANE_URL}/api/templates/variables")
 
@@ -122,12 +122,12 @@ jobs:
             '.data | map(select(.key != $key)) + [{"key": $key, "value": $val}] | {"variables": .}')
 
           # Update global variables
-          curl -sf --max-time 30 \
+          curl -sS --fail-with-body --max-time 30 \
             -X PUT \
             -H "X-Api-Key: ${ARCANE_API_KEY}" \
             -H "Content-Type: application/json" \
             -d "${updated}" \
-            "${ARCANE_URL}/api/templates/variables" > /dev/null
+            "${ARCANE_URL}/api/templates/variables"
 
           echo "Global variables updated"
 
