@@ -154,7 +154,6 @@ jobs:
           arcane-api-key: ${{ secrets.ARCANE_API_KEY }}
           environment-id: ${{ matrix['environment-id'] }}
           compose-files: ${{ matrix['compose-file'] }}
-          sync-name-prefix: ${{ matrix.host }}
           auth-type: http
           git-token: ${{ secrets.GIT_TOKEN }}
           branch: main
