@@ -4,23 +4,105 @@ on:
   push:
     branches: [main]
     paths:
-      - 'arcane/**'
+      - 'arcane/hosts/**'
       - '.github/workflows/arcane-deploy.yaml'
   workflow_dispatch:
+    inputs:
+      force:
+        description: 'Deploy all stacks regardless of changes (ignore floating tags)'
+        type: boolean
+        default: false
 
 concurrency:
   group: arcane-deploy
   cancel-in-progress: false
 
 jobs:
-  deploy:
-    name: Deploy to Arcane
+  discover:
+    name: Discover Changed Deployments
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    outputs:
+      matrix: ${{ steps.discover.outputs.matrix }}
+      has-deployments: ${{ steps.discover.outputs.has-deployments }}
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
+      - name: Discover changed deployments
+        id: discover
+        env:
+          FORCE: ${{ inputs.force || 'false' }}
+        run: |
+          set -euo pipefail
+
+          matrix_items=()
+
+          # Find all yaml/yml files at arcane/hosts/{host}/{project}/{file}
+          # (depth 3 relative to arcane/hosts/)
+          while IFS= read -r -d '' compose_file; do
+            rel_path="${compose_file#./}"
+
+            # Parse host and project from path: arcane/hosts/{host}/{project}/{file}
+            host=$(cut -d'/' -f3 <<< "$rel_path")
+            project=$(cut -d'/' -f4 <<< "$rel_path")
+            project_dir="arcane/hosts/${host}/${project}"
+
+            # Require per-host config file with environment_id
+            host_config="arcane/hosts/${host}/arcane.json"
+            if [[ ! -f "$host_config" ]]; then
+              echo "::warning::No arcane.json found for host '${host}' — skipping '${rel_path}'"
+              continue
+            fi
+
+            env_id=$(jq -r '.environment_id // empty' "$host_config")
+            if [[ -z "$env_id" ]]; then
+              echo "::warning::No environment_id in ${host_config} — skipping '${rel_path}'"
+              continue
+            fi
+
+            # Floating tag: updated to HEAD after each successful deploy
+            tag="deployed/arcane/${host}/${project}"
+
+            # Skip if nothing in the project directory changed since last deploy
+            if [[ "${FORCE}" != "true" ]] && git tag -l "$tag" | grep -q .; then
+              if git diff --quiet "${tag}" HEAD -- "${project_dir}/"; then
+                echo "No changes in ${project_dir} since ${tag} — skipping"
+                continue
+              fi
+              echo "Changes detected in ${project_dir} since ${tag}"
+            fi
+
+            matrix_items+=("$(jq -cn \
+              --arg host "$host" \
+              --arg project "$project" \
+              --arg compose_file "$rel_path" \
+              --arg tag "$tag" \
+              --arg env_id "$env_id" \
+              '{host: $host, project: $project, "compose-file": $compose_file, tag: $tag, "environment-id": $env_id}')")
+          done < <(find arcane/hosts -mindepth 3 -maxdepth 3 -type f \
+            \( -name "*.yaml" -o -name "*.yml" \) -print0 | sort -z)
+
+          if [[ ${#matrix_items[@]} -eq 0 ]]; then
+            echo "No deployments needed"
+            echo "has-deployments=false" >> "$GITHUB_OUTPUT"
+            echo 'matrix={"include":[]}' >> "$GITHUB_OUTPUT"
+          else
+            matrix_json=$(printf '%s\n' "${matrix_items[@]}" | jq -sc '{include: .}')
+            echo "has-deployments=true" >> "$GITHUB_OUTPUT"
+            echo "matrix=${matrix_json}" >> "$GITHUB_OUTPUT"
+          fi
+
+  set-global-vars:
+    name: Set Arcane Global Variables
+    runs-on: ubuntu-latest
+    needs: discover
+    if: needs.discover.outputs.has-deployments == 'true'
+    steps:
       - name: Set Arcane global variables
         env:
           ARCANE_URL: ${{ secrets.ARCANE_URL }}
@@ -50,16 +132,37 @@ jobs:
 
           echo "Global variables updated"
 
-      - name: Deploy heapsnas stacks
+  deploy:
+    name: Deploy ${{ matrix.host }}/${{ matrix.project }}
+    runs-on: ubuntu-latest
+    needs: [discover, set-global-vars]
+    if: needs.discover.outputs.has-deployments == 'true'
+    strategy:
+      matrix: ${{ fromJSON(needs.discover.outputs.matrix) }}
+      fail-fast: false
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy to Arcane
         # TODO: Pin to commit SHA once nsheaps/github-actions has releases.
         #       See: https://github.com/nsheaps/iac/issues/3
         uses: nsheaps/github-actions/.github/actions/arcane-deploy@main
         with:
           arcane-url: ${{ secrets.ARCANE_URL }}
           arcane-api-key: ${{ secrets.ARCANE_API_KEY }}
-          environment-id: ${{ secrets.ARCANE_ENVIRONMENT_ID }}
-          compose-dir: arcane/hosts/heapsnas
-          sync-name-prefix: heapsnas
+          environment-id: ${{ matrix['environment-id'] }}
+          compose-files: ${{ matrix['compose-file'] }}
+          sync-name-prefix: ${{ matrix.host }}
           auth-type: http
           git-token: ${{ secrets.GIT_TOKEN }}
           branch: main
+
+      - name: Mark deployment tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -f "${{ matrix.tag }}" HEAD
+          git push origin "refs/tags/${{ matrix.tag }}" --force
