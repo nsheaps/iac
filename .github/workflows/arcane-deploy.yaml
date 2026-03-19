@@ -106,7 +106,7 @@ jobs:
         env:
           ARCANE_URL: ${{ secrets.ARCANE_URL }}
           ARCANE_API_KEY: ${{ secrets.ARCANE_API_KEY }}
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
         run: |
           set -euo pipefail
 
