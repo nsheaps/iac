@@ -31,7 +31,7 @@ jobs:
           PULUMI_CONFIG_PASSPHRASE: op://Infrastructure/pulumi-backend/passphrase
 
       - name: Install mise
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v4
 
       - name: Install cloudflare-apps dependencies
         run: yarn --cwd cloudflare-apps install --immutable
