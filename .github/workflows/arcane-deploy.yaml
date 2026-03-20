@@ -28,7 +28,7 @@ jobs:
       has-deployments: ${{ steps.discover.outputs.has-deployments }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           fetch-tags: true
@@ -143,10 +143,10 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Load deploy key from 1Password
-        uses: 1password/load-secrets-action@v2
+        uses: 1password/load-secrets-action@v3
         with:
           export-env: true
         env:
