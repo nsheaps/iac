@@ -4,9 +4,9 @@
 
 - name: Ensure state directory exists
   file:
-    path: "{{ update_notifier_state_file | dirname }}"
+    path: '{{ update_notifier_state_file | dirname }}'
     state: directory
-    mode: "0755"
+    mode: '0755'
 
 - name: Get current commit SHA
   command: git -C "{{ update_notifier_repo_path }}" rev-parse HEAD
@@ -16,7 +16,7 @@
 
 - name: Read previous commit SHA
   slurp:
-    src: "{{ update_notifier_state_file }}"
+    src: '{{ update_notifier_state_file }}'
   register: previous_sha_file
   failed_when: false
 
@@ -38,11 +38,11 @@
 
 - name: Set version label
   set_fact:
-    version_label: "{{ version_tag.stdout | trim if version_tag.rc == 0 else short_sha.stdout | trim }}"
+    version_label: '{{ version_tag.stdout | trim if version_tag.rc == 0 else short_sha.stdout | trim }}'
 
 - name: Build compare URL
   set_fact:
-    compare_url: "{{ update_notifier_repo_url }}/compare/{{ previous_sha }}...{{ current_sha.stdout | trim }}"
+    compare_url: '{{ update_notifier_repo_url }}/compare/{{ previous_sha }}...{{ current_sha.stdout | trim }}'
   when: previous_sha | length > 0
 
 - name: Send update notification (Linux)
@@ -70,7 +70,7 @@
 
 - name: Save current commit SHA
   copy:
-    content: "{{ current_sha.stdout | trim }}"
-    dest: "{{ update_notifier_state_file }}"
-    mode: "0644"
+    content: '{{ current_sha.stdout | trim }}'
+    dest: '{{ update_notifier_state_file }}'
+    mode: '0644'
   when: current_sha.stdout is defined
