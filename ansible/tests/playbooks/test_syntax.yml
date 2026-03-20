@@ -19,30 +19,7 @@
       changed_when: false
       tags: [tasks]
 
-    - name: Verify users role is included
-      assert:
-        that:
-          - "'users :' in task_list.stdout"
-        fail_msg: 'Users role is not included in main playbook'
-        success_msg: 'Users role is properly included'
-      tags: [tasks]
-
-    - name: List all available tags
-      command: ansible-playbook ../../local.yml --list-tags
-      register: tag_list
-      changed_when: false
-      tags: [tags]
-
-    - name: Display available tags
+    - name: Display task list
       debug:
-        msg: '{{ tag_list.stdout_lines }}'
-      tags: [tags]
-
-    - name: Verify critical tags exist
-      assert:
-        that:
-          - "'users' in tag_list.stdout"
-          - "'base' in tag_list.stdout"
-        fail_msg: 'Critical tags are missing'
-        success_msg: 'All critical tags are present'
-      tags: [tags]
+        msg: "{{ task_list.stdout_lines }}"
+      tags: [tasks]

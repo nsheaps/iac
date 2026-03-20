@@ -1,0 +1,76 @@
+---
+# Notifies logged-in users when ansible-pull has applied an update.
+# Shows the version tag (or short SHA) and a compare link.
+
+- name: Ensure state directory exists
+  file:
+    path: "{{ update_notifier_state_file | dirname }}"
+    state: directory
+    mode: "0755"
+
+- name: Get current commit SHA
+  command: git -C "{{ update_notifier_repo_path }}" rev-parse HEAD
+  register: current_sha
+  changed_when: false
+  failed_when: false
+
+- name: Read previous commit SHA
+  slurp:
+    src: "{{ update_notifier_state_file }}"
+  register: previous_sha_file
+  failed_when: false
+
+- name: Set previous SHA fact
+  set_fact:
+    previous_sha: "{{ (previous_sha_file.content | b64decode | trim) if previous_sha_file is succeeded else '' }}"
+
+- name: Get version tag for current commit
+  command: git -C "{{ update_notifier_repo_path }}" describe --tags --exact-match HEAD
+  register: version_tag
+  changed_when: false
+  failed_when: false
+
+- name: Get short SHA
+  command: git -C "{{ update_notifier_repo_path }}" rev-parse --short HEAD
+  register: short_sha
+  changed_when: false
+  failed_when: false
+
+- name: Set version label
+  set_fact:
+    version_label: "{{ version_tag.stdout | trim if version_tag.rc == 0 else short_sha.stdout | trim }}"
+
+- name: Build compare URL
+  set_fact:
+    compare_url: "{{ update_notifier_repo_url }}/compare/{{ previous_sha }}...{{ current_sha.stdout | trim }}"
+  when: previous_sha | length > 0
+
+- name: Send update notification (Linux)
+  include_tasks: notify_linux.yml
+  when:
+    - current_sha.stdout is defined
+    - current_sha.stdout | trim != previous_sha
+    - ansible_system == "Linux"
+    - ansible_env.WSL_DISTRO_NAME is not defined
+
+- name: Send update notification (macOS)
+  include_tasks: notify_macos.yml
+  when:
+    - current_sha.stdout is defined
+    - current_sha.stdout | trim != previous_sha
+    - ansible_system == "Darwin"
+
+- name: Send update notification (WSL)
+  include_tasks: notify_wsl.yml
+  when:
+    - current_sha.stdout is defined
+    - current_sha.stdout | trim != previous_sha
+    - ansible_system == "Linux"
+    - ansible_env.WSL_DISTRO_NAME is defined
+
+- name: Save current commit SHA
+  copy:
+    content: "{{ current_sha.stdout | trim }}"
+    dest: "{{ update_notifier_state_file }}"
+    mode: "0644"
+  when: current_sha.stdout is defined
