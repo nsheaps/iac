@@ -1,0 +1,25 @@
+---
+# Test playbook for verifying ansible syntax and structure
+- name: Syntax and Structure Tests
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Check main playbook syntax
+      command: ansible-playbook ../../local.yml --syntax-check
+      register: syntax_check
+      changed_when: false
+      failed_when: syntax_check.rc != 0
+      tags: [syntax]
+
+    - name: List all tasks in main playbook
+      command: ansible-playbook ../../local.yml --list-tasks
+      register: task_list
+      changed_when: false
+      tags: [tasks]
+
+    - name: Display task list
+      debug:
+        msg: '{{ task_list.stdout_lines }}'
+      tags: [tasks]

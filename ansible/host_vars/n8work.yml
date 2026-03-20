@@ -1,0 +1,6 @@
+---
+# n8work configuration (macOS workstation)
+# Hostname: Nathans-64GB-MBP
+
+ansible_pull_enabled: true
+ansible_pull_cron_minute: '*/30'

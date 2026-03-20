@@ -1,6 +1,6 @@
 # iac
 
-Infrastructure as Code for the nsheaps organization. Manages container deployments (Docker Compose via [Arcane](https://github.com/getarcaneapp/arcane)) and GitHub organization resources ([Pulumi](https://www.pulumi.com/docs/iac/languages-sdks/yaml/)).
+Infrastructure as Code for the nsheaps organization. Manages container deployments (Docker Compose via [Arcane](https://github.com/getarcaneapp/arcane)), GitHub organization resources ([Pulumi](https://www.pulumi.com/docs/iac/languages-sdks/yaml/)), and host configuration management ([Ansible](https://docs.ansible.com/ansible/latest/index.html)).
 
 ## Infrastructure Managed
 
@@ -31,6 +31,14 @@ Secrets (Arcane API key, deploy key) are stored as GitHub repository secrets, sy
 Previously, stacks were synced via [Portainer](https://github.com/portainer/portainer) GitOps polling. The `_portainer/` directory in `hosts/` contains the bootstrap compose for Portainer itself. See [Portainer stack docs](https://docs.portainer.io/user/docker/stacks) for reference.
 
 Example stacks: https://github.com/portainer/templates/tree/master/stacks
+
+### Ansible Host Configuration (`ansible/`)
+
+Automated configuration management for Linux workstations and servers using `ansible-pull`. Hosts periodically pull configuration from this repo and apply changes automatically, with desktop notifications on workstations.
+
+See [ansible/README.md](ansible/README.md) for full documentation including setup instructions.
+
+> **Note:** This replaces the former [nsheaps/n8-ansible](https://github.com/nsheaps/n8-ansible) repository. All ansible configuration now lives here.
 
 ### GitHub Organization (`github-org/`)
 

@@ -1,0 +1,11 @@
+[test_workstation]
+test-workstation ansible_connection=local
+
+[test_server]
+test-server ansible_connection=local
+
+[workstation:children]
+test_workstation
+
+[server:children]
+test_server
