@@ -31,11 +31,11 @@ sudo ansible-pull -U https://github.com/nsheaps/n8-ansible.git -C main
 
 ## Hosts
 
-| Hostname   | OS    | Purpose       |
-| ---------- | ----- | ------------- |
-| n8laptop   | Linux | Laptop        |
-| n8htpc-wsl | WSL   | HTPC (WSL)    |
-| n8work     | macOS | Laptop        |
+| Hostname   | OS    | Purpose    |
+| ---------- | ----- | ---------- |
+| n8laptop   | Linux | Laptop     |
+| n8htpc-wsl | WSL   | HTPC (WSL) |
+| n8work     | macOS | Laptop     |
 
 ## Architecture
 
