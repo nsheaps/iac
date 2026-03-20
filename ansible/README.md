@@ -31,12 +31,12 @@ sudo ansible-pull -U https://github.com/nsheaps/n8-ansible.git -C main
 
 ## Hosts
 
-| Hostname | OS | Purpose |
-|---|---|---|
-| n8laptop | Linux | Laptop |
-| n8htpc | Linux | HTPC |
-| n8htpc-wsl | WSL | WSL on n8htpc |
-| n8work | macOS | Workstation |
+| Hostname   | OS    | Purpose       |
+| ---------- | ----- | ------------- |
+| n8laptop   | Linux | Laptop        |
+| n8htpc     | Linux | HTPC          |
+| n8htpc-wsl | WSL   | WSL on n8htpc |
+| n8work     | macOS | Workstation   |
 
 ## Architecture
 
@@ -50,16 +50,16 @@ Additional roles can be applied per host or group. Hosts are in both purpose gro
 
 ## Structure
 
-| Path | Purpose |
-|---|---|
-| `local.yml` | Main playbook (ansible-pull entry point) |
-| `hosts` | Inventory file |
-| `host_vars/` | Per-host variables |
-| `group_vars/` | Shared variables |
-| `roles/` | Ansible roles |
-| `playbooks/` | Additional playbooks (bootstrap) |
-| `bin/` | Helper scripts (bootstrap, test runner) |
-| `tests/` | Test playbooks |
+| Path          | Purpose                                  |
+| ------------- | ---------------------------------------- |
+| `local.yml`   | Main playbook (ansible-pull entry point) |
+| `hosts`       | Inventory file                           |
+| `host_vars/`  | Per-host variables                       |
+| `group_vars/` | Shared variables                         |
+| `roles/`      | Ansible roles                            |
+| `playbooks/`  | Additional playbooks (bootstrap)         |
+| `bin/`        | Helper scripts (bootstrap, test runner)  |
+| `tests/`      | Test playbooks                           |
 
 ## License
 
