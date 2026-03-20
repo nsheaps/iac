@@ -1,6 +1,0 @@
----
-# RedHat/Fedora-specific variables for ansible-pull
-
-cron_package: cronie
-cron_service: crond
-sudo_group: wheel

@@ -1,5 +1,0 @@
----
-# n8htpc configuration (Linux HTPC)
-
-ansible_pull_enabled: true
-ansible_pull_cron_minute: '*/30'
