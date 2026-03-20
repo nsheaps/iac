@@ -154,8 +154,8 @@ jobs:
           arcane-api-key: ${{ secrets.ARCANE_API_KEY }}
           environment-id: ${{ matrix['environment-id'] }}
           compose-files: ${{ matrix['compose-file'] }}
-          auth-type: http
-          git-token: ${{ secrets.GIT_TOKEN }}
+          auth-type: ssh
+          ssh-private-key: ${{ secrets.IAC_ARCANE_DEPLOY_KEY }}
           branch: main
 
   tag:
