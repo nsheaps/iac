@@ -1,6 +1,0 @@
----
-# Arch Linux-specific variables for ansible-pull
-
-cron_package: cronie
-cron_service: cronie
-sudo_group: wheel

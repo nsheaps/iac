@@ -34,9 +34,8 @@ sudo ansible-pull -U https://github.com/nsheaps/n8-ansible.git -C main
 | Hostname   | OS    | Purpose       |
 | ---------- | ----- | ------------- |
 | n8laptop   | Linux | Laptop        |
-| n8htpc     | Linux | HTPC          |
-| n8htpc-wsl | WSL   | WSL on n8htpc |
-| n8work     | macOS | Workstation   |
+| n8htpc-wsl | WSL   | HTPC (WSL)    |
+| n8work     | macOS | Laptop        |
 
 ## Architecture
 
@@ -46,7 +45,7 @@ ansible-pull → local.yml
   → roles/update-notifier (post-task): desktop notification with version/compare link
 ```
 
-Additional roles can be applied per host or group. Hosts are in both purpose groups (`laptop`, `htpc`, `workstation`) and OS groups (`linux`, `macos`, `wsl`).
+Additional roles can be applied per host or group. Hosts are in both purpose groups (`laptop`, `htpc`) and OS groups (`linux`, `macos`, `wsl`).
 
 ## Structure
 
