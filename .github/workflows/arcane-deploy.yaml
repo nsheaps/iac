@@ -145,6 +145,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Load deploy key from 1Password
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          IAC_ARCANE_DEPLOY_KEY: "op://heapsinfra/iac-arcane-deploy-key/private key"
+
       - name: Deploy to Arcane
         # TODO: Pin to commit SHA once nsheaps/github-actions has releases.
         #       See: https://github.com/nsheaps/iac/issues/3
@@ -155,7 +163,7 @@ jobs:
           environment-id: ${{ matrix['environment-id'] }}
           compose-files: ${{ matrix['compose-file'] }}
           auth-type: ssh
-          ssh-private-key: ${{ secrets.IAC_ARCANE_DEPLOY_KEY }}
+          ssh-private-key: ${{ env.IAC_ARCANE_DEPLOY_KEY }}
           branch: main
 
   tag:
