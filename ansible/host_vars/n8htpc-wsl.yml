@@ -1,16 +1,5 @@
 ---
-# n8htpc-wsl configuration
+# n8htpc-wsl configuration (WSL on n8htpc)
 
-# User configuration
-user_configs:
-  - system_user: root
-    config_profile: root
-  - system_user: nsheaps
-    config_profile: nsheaps
-
-# Ansible pull configuration
-ansible_cron_minute: '*/30'
-
-# Healthchecks.io monitoring
-healthchecks_io_uuid: "{{ vault_healthchecks_io_uuid_n8htpc_wsl | default('') }}"
-healthchecks_io_enabled: true
+ansible_pull_enabled: true
+ansible_pull_cron_minute: "*/30"

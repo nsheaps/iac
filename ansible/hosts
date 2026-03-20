@@ -1,14 +1,22 @@
-[server]
-rundeck-0
-n8-server
+# Host inventory
+# Hosts are grouped by both purpose and OS family.
+
+[laptop]
+n8laptop
+
+[htpc]
+n8htpc
+n8htpc-wsl
 
 [workstation]
-dev-0
-dev-fedora-ws38
-dev-endeavour-cassini
-dev-ubuntu-2204
+n8work
+
+[linux]
 n8laptop
 n8htpc
-nsh-desktop
+
+[macos]
+n8work
+
+[wsl]
 n8htpc-wsl
-nsh-desktop-wsl

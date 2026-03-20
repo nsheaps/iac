@@ -1,0 +1,4 @@
+---
+update_notifier_repo_url: "https://github.com/nsheaps/n8-ansible"
+update_notifier_state_file: "/var/lib/ansible-pull/.last_commit"
+update_notifier_repo_path: "/var/lib/ansible-pull/repo"

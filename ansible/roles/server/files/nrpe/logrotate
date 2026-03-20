@@ -1,7 +1,0 @@
-/var/log/nrpe.log {
-  rotate 3
-  daily
-  compress
-  missingok
-  notifempty
-}
