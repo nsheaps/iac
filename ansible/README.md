@@ -1,33 +1,27 @@
-# n8-ansible
+# Ansible Host Configuration
 
 Personal home-network configuration using Ansible. Uses `ansible-pull` so each host self-provisions from this repo on a schedule.
 
-Supports Linux, macOS, and WSL.
+Supports Linux (Ubuntu), macOS, and WSL.
 
 ## Quick Start
 
-### Bootstrap a New Host
+One command to onboard any machine (new or existing):
 
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/nsheaps/n8-ansible/main/bin/bootstrap)
+bash <(curl -fsSL https://raw.githubusercontent.com/nsheaps/iac/main/ansible/bin/bootstrap)
 ```
 
-This installs dependencies, sets up SSH/auth, clones the repo, generates host config, and optionally runs the first `ansible-pull`.
+The script will interactively prompt for:
+- **Hostname** (default: current hostname)
+- **Username** (default: current user)
+- **OS group** (auto-detected: `linux`, `macos`, or `wsl`)
+- **Purpose group** (`laptop` or `htpc`)
+- **Cron schedule** (default: every 30 minutes)
 
-### Manual Setup
+For **new machines**, the script opens a PR to add the host config to the repo, then runs ansible locally regardless of whether the PR is merged.
 
-```bash
-git clone https://github.com/nsheaps/n8-ansible.git
-cd n8-ansible
-ansible-playbook local.yml --check  # Dry run
-sudo ansible-playbook local.yml     # Apply
-```
-
-### Run ansible-pull Directly
-
-```bash
-sudo ansible-pull -U https://github.com/nsheaps/n8-ansible.git -C main
-```
+For **existing machines**, it pulls the latest config and runs ansible.
 
 ## Hosts
 
