@@ -151,7 +151,7 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          IAC_ARCANE_DEPLOY_KEY: "op://heapsinfra/iac-arcane-deploy-key/private key"
+          IAC_ARCANE_DEPLOY_KEY: 'op://heapsinfra/iac-arcane-deploy-key/private key'
 
       - name: Deploy to Arcane
         # TODO: Pin to commit SHA once nsheaps/github-actions has releases.
