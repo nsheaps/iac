@@ -36,6 +36,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/nsheaps/iac/main/ansible/bin
 ---
 
 The bootstrap will interactively prompt for:
+
 - **Hostname** (default: current hostname)
 - **Username** (default: current user)
 - **OS group** (auto-detected: `linux`, `macos`, or `wsl`)
