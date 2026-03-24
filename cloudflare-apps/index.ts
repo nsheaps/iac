@@ -9,6 +9,9 @@ const workerName = config.require('workerName');
 const allowedOrigins = config.require('allowedOrigins');
 const r2BucketName = config.require('r2BucketName');
 const domainName = config.require('domainName');
+const aiGatewayName = config.get('aiGatewayName') ?? 'claude-code';
+const aiGatewayRateLimit = config.getNumber('aiGatewayRateLimit') ?? 200;
+const aiGatewayCacheTtl = config.getNumber('aiGatewayCacheTtl') ?? 0;
 
 // ---------------------------------------------------------------------------
 // R2 Bucket — Pulumi state backend
@@ -82,6 +85,39 @@ const authDns = new cloudflare.Record('auth-cname', {
 });
 
 // ---------------------------------------------------------------------------
+// AI Gateway — proxy AI provider requests for logging, caching, cost tracking
+// ---------------------------------------------------------------------------
+// Once deployed, set ANTHROPIC_BASE_URL to route Claude Code through the gateway:
+//   export ANTHROPIC_BASE_URL="https://gateway.ai.cloudflare.com/v1/<account_id>/<gateway_id>/anthropic"
+//
+// Supported provider paths:
+//   /anthropic   — Anthropic (Claude)
+//   /openai      — OpenAI (GPT)
+//   /openrouter  — OpenRouter (multi-model)
+//   /workers-ai  — Cloudflare Workers AI
+//
+// For z.ai/Zhipu AI, use the universal endpoint (POST to gateway root with
+// provider config in the body). See the cloudflare plugin's ai-gateway skill.
+//
+// Dashboard: https://dash.cloudflare.com/?to=/:account/ai/ai-gateway
+// Docs: https://developers.cloudflare.com/ai-gateway/
+const aiGateway = new cloudflare.AiGateway('ai-gateway', {
+  accountId,
+  name: aiGatewayName,
+
+  // Caching — disabled by default for Claude Code (responses are non-deterministic).
+  // Set cloudflare-apps:aiGatewayCacheTtl to a positive value (seconds) to enable.
+  cacheInvalidateOnUpdate: true,
+  cacheTtl: aiGatewayCacheTtl,
+
+  // Rate limiting — protects against runaway spend.
+  // Adjust via cloudflare-apps:aiGatewayRateLimit config.
+  rateLimitingInterval: 60,
+  rateLimitingLimit: aiGatewayRateLimit,
+  rateLimitingTechnique: 'fixed',
+});
+
+// ---------------------------------------------------------------------------
 // Outputs
 // ---------------------------------------------------------------------------
 export const stateBucketName = stateBucket.name;
@@ -90,6 +126,9 @@ export const privatePagesDomain = pulumi.interpolate`https://private-pages.${dom
 export const ceptDomain = pulumi.interpolate`https://cept.${domainName}`;
 export const authDomain = pulumi.interpolate`https://auth.${domainName}`;
 export const workerScriptName = workerScript.name;
+export const aiGatewayId = aiGateway.name;
+export const aiGatewayAnthropicUrl = pulumi.interpolate`https://gateway.ai.cloudflare.com/v1/${accountId}/${aiGateway.name}/anthropic`;
+export const aiGatewayOpenrouterUrl = pulumi.interpolate`https://gateway.ai.cloudflare.com/v1/${accountId}/${aiGateway.name}/openrouter`;
 
 // Suppress unused variable warnings — these resources have side effects
 void privatePagesDns;
