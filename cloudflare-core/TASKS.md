@@ -42,6 +42,7 @@ To avoid conflicts, either:
   `Pulumi.prod.yaml` in this project.
 
 If migrating, import each record:
+
 ```bash
 bin/pulumi-wrapper.sh -C cloudflare-core import \
   cloudflare:index/record:Record <resource-name> <zone-id>/<record-id> --stack prod
@@ -64,7 +65,7 @@ bin/pulumi-wrapper.sh -C cloudflare-core up --stack prod
 1. Add to `cloudflare-core:domains` in `Pulumi.prod.yaml`:
    ```yaml
    - name: newdomain.com
-     registrar: external  # or 'cloudflare'
+     registrar: external # or 'cloudflare'
    ```
 2. If the zone already exists in Cloudflare, import it (see step 3).
 3. Add DNS records to `cloudflare-core:dnsRecords` under the domain key.
