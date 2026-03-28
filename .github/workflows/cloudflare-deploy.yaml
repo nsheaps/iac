@@ -23,7 +23,7 @@ jobs:
 
       - name: Load secrets from 1Password
         id: secrets
-        uses: 1password/load-secrets-action@v3
+        uses: 1password/load-secrets-action@v4
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_TOKEN }}
           CLOUDFLARE_API_TOKEN: op://Infrastructure/cloudflare-api-token/credential
