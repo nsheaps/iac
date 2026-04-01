@@ -83,72 +83,72 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@nx/nx-darwin-arm64@npm:22.6.1":
-  version: 22.6.1
-  resolution: "@nx/nx-darwin-arm64@npm:22.6.1"
+"@nx/nx-darwin-arm64@npm:22.6.3":
+  version: 22.6.3
+  resolution: "@nx/nx-darwin-arm64@npm:22.6.3"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@nx/nx-darwin-x64@npm:22.6.1":
-  version: 22.6.1
-  resolution: "@nx/nx-darwin-x64@npm:22.6.1"
+"@nx/nx-darwin-x64@npm:22.6.3":
+  version: 22.6.3
+  resolution: "@nx/nx-darwin-x64@npm:22.6.3"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@nx/nx-freebsd-x64@npm:22.6.1":
-  version: 22.6.1
-  resolution: "@nx/nx-freebsd-x64@npm:22.6.1"
+"@nx/nx-freebsd-x64@npm:22.6.3":
+  version: 22.6.3
+  resolution: "@nx/nx-freebsd-x64@npm:22.6.3"
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
 
-"@nx/nx-linux-arm-gnueabihf@npm:22.6.1":
-  version: 22.6.1
-  resolution: "@nx/nx-linux-arm-gnueabihf@npm:22.6.1"
+"@nx/nx-linux-arm-gnueabihf@npm:22.6.3":
+  version: 22.6.3
+  resolution: "@nx/nx-linux-arm-gnueabihf@npm:22.6.3"
   conditions: os=linux & cpu=arm
   languageName: node
   linkType: hard
 
-"@nx/nx-linux-arm64-gnu@npm:22.6.1":
-  version: 22.6.1
-  resolution: "@nx/nx-linux-arm64-gnu@npm:22.6.1"
+"@nx/nx-linux-arm64-gnu@npm:22.6.3":
+  version: 22.6.3
+  resolution: "@nx/nx-linux-arm64-gnu@npm:22.6.3"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@nx/nx-linux-arm64-musl@npm:22.6.1":
-  version: 22.6.1
-  resolution: "@nx/nx-linux-arm64-musl@npm:22.6.1"
+"@nx/nx-linux-arm64-musl@npm:22.6.3":
+  version: 22.6.3
+  resolution: "@nx/nx-linux-arm64-musl@npm:22.6.3"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@nx/nx-linux-x64-gnu@npm:22.6.1":
-  version: 22.6.1
-  resolution: "@nx/nx-linux-x64-gnu@npm:22.6.1"
+"@nx/nx-linux-x64-gnu@npm:22.6.3":
+  version: 22.6.3
+  resolution: "@nx/nx-linux-x64-gnu@npm:22.6.3"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@nx/nx-linux-x64-musl@npm:22.6.1":
-  version: 22.6.1
-  resolution: "@nx/nx-linux-x64-musl@npm:22.6.1"
+"@nx/nx-linux-x64-musl@npm:22.6.3":
+  version: 22.6.3
+  resolution: "@nx/nx-linux-x64-musl@npm:22.6.3"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@nx/nx-win32-arm64-msvc@npm:22.6.1":
-  version: 22.6.1
-  resolution: "@nx/nx-win32-arm64-msvc@npm:22.6.1"
+"@nx/nx-win32-arm64-msvc@npm:22.6.3":
+  version: 22.6.3
+  resolution: "@nx/nx-win32-arm64-msvc@npm:22.6.3"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@nx/nx-win32-x64-msvc@npm:22.6.1":
-  version: 22.6.1
-  resolution: "@nx/nx-win32-x64-msvc@npm:22.6.1"
+"@nx/nx-win32-x64-msvc@npm:22.6.3":
+  version: 22.6.3
+  resolution: "@nx/nx-win32-x64-msvc@npm:22.6.3"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -908,21 +908,21 @@ __metadata:
   linkType: hard
 
 "nx@npm:^22.0.0":
-  version: 22.6.1
-  resolution: "nx@npm:22.6.1"
+  version: 22.6.3
+  resolution: "nx@npm:22.6.3"
   dependencies:
     "@ltd/j-toml": "npm:^1.38.0"
     "@napi-rs/wasm-runtime": "npm:0.2.4"
-    "@nx/nx-darwin-arm64": "npm:22.6.1"
-    "@nx/nx-darwin-x64": "npm:22.6.1"
-    "@nx/nx-freebsd-x64": "npm:22.6.1"
-    "@nx/nx-linux-arm-gnueabihf": "npm:22.6.1"
-    "@nx/nx-linux-arm64-gnu": "npm:22.6.1"
-    "@nx/nx-linux-arm64-musl": "npm:22.6.1"
-    "@nx/nx-linux-x64-gnu": "npm:22.6.1"
-    "@nx/nx-linux-x64-musl": "npm:22.6.1"
-    "@nx/nx-win32-arm64-msvc": "npm:22.6.1"
-    "@nx/nx-win32-x64-msvc": "npm:22.6.1"
+    "@nx/nx-darwin-arm64": "npm:22.6.3"
+    "@nx/nx-darwin-x64": "npm:22.6.3"
+    "@nx/nx-freebsd-x64": "npm:22.6.3"
+    "@nx/nx-linux-arm-gnueabihf": "npm:22.6.3"
+    "@nx/nx-linux-arm64-gnu": "npm:22.6.3"
+    "@nx/nx-linux-arm64-musl": "npm:22.6.3"
+    "@nx/nx-linux-x64-gnu": "npm:22.6.3"
+    "@nx/nx-linux-x64-musl": "npm:22.6.3"
+    "@nx/nx-win32-arm64-msvc": "npm:22.6.3"
+    "@nx/nx-win32-x64-msvc": "npm:22.6.3"
     "@yarnpkg/lockfile": "npm:^1.1.0"
     "@yarnpkg/parsers": "npm:3.0.2"
     "@zkochan/js-yaml": "npm:0.0.7"
@@ -989,7 +989,7 @@ __metadata:
   bin:
     nx: bin/nx.js
     nx-cloud: bin/nx-cloud.js
-  checksum: 10c0/4988ac32fece277439397837f56755d5b62b865acd15e0e18b47ea134f4dca4988dadff82d512e32e8d9e365e5cb3463fe46a465ba41434831e09b3e65436283
+  checksum: 10c0/3e99376141e458f08204fb81670ae80b727bf9f7a21e9c07f133ce1a504018e4bb65425b0bfe14241b63eee45b2f143768548bf0a6e3403bd1a98cb9ee025177
   languageName: node
   linkType: hard
 
