@@ -1,0 +1,17 @@
+---
+# Send notification on macOS using osascript
+
+- name: Send macOS notification
+  command: >
+    osascript -e 'display notification "Updated to {{ version_label }}" with title "Ansible Updated"'
+  changed_when: false
+  failed_when: false
+
+- name: Open compare URL in browser (if available)
+  command: open "{{ compare_url }}"
+  changed_when: false
+  failed_when: false
+  when: compare_url is defined
+  # Note: macOS notifications don't support click actions natively.
+  # The compare URL is opened directly after the notification.
+  # For a clickable notification, a helper app like terminal-notifier could be used.

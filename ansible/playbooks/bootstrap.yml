@@ -1,0 +1,7 @@
+---
+- name: Bootstrap new ansible-configured node
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  roles:
+    - ../roles/bootstrap

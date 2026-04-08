@@ -1,0 +1,17 @@
+---
+# Send desktop notification to all logged-in users on Linux
+
+- name: Install notify-send-all script
+  copy:
+    src: notify-send-all
+    dest: /usr/local/bin/notify-send-all
+    mode: '0755'
+
+- name: Send notification to all users
+  command: >
+    notify-send-all
+    -t 10000
+    "Ansible Updated"
+    "Updated to {{ version_label }}{{ '\nClick to view changes: ' + compare_url if compare_url is defined else '' }}"
+  changed_when: false
+  failed_when: false

@@ -1,0 +1,13 @@
+---
+# Main playbook for ansible-pull
+# Each host pulls this and applies its own configuration.
+
+- hosts: all
+  become: true
+  roles:
+    - ansible-pull
+
+  post_tasks:
+    - name: Send update notification
+      include_role:
+        name: update-notifier

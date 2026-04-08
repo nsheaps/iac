@@ -1,0 +1,30 @@
+---
+# Main tasks for ansible-pull role
+
+- name: Include distribution-specific variables
+  include_vars: '{{ item }}'
+  with_first_found:
+    - files:
+        - '{{ ansible_distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
+        - 'default.yml'
+      paths:
+        - '{{ role_path }}/vars'
+      skip: true
+  tags: always
+
+- import_tasks: user.yml
+  tags: [ansible-pull, user]
+
+- import_tasks: packages.yml
+  tags: [ansible-pull, packages]
+
+- import_tasks: provision_script.yml
+  tags: [ansible-pull, scripts]
+
+- import_tasks: cron.yml
+  tags: [ansible-pull, cron]
+  when: ansible_pull_enabled
+
+- import_tasks: logging.yml
+  tags: [ansible-pull, logging]

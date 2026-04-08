@@ -1,0 +1,80 @@
+#!/bin/bash
+# {{ ansible_managed }}
+# Ansible-pull provision script
+
+# Configuration
+ANSIBLE_USER="{{ ansible_pull_user }}"
+REPO="{{ ansible_pull_repo }}"
+BRANCH="{{ ansible_pull_branch }}"
+LOGFILE="{{ ansible_pull_logfile }}"
+EXTRA_OPTS="{{ ansible_pull_extra_opts }}"
+ANSIBLE_DIR="{{ ansible_pull_directory }}"
+
+{% if ansible_pull_vault_password_file is defined and ansible_pull_vault_password_file %}
+VAULT_OPTS="--vault-password-file={{ ansible_pull_vault_password_file }}"
+{% else %}
+VAULT_OPTS=""
+{% endif %}
+
+{% if ansible_pull_use_inhibit %}
+PRECMD="systemd-inhibit --who='ansible-pull' --why='system provisioning'"
+{% else %}
+PRECMD=""
+{% endif %}
+
+# Function to log messages
+log_message() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" | tee -a "$LOGFILE"
+}
+
+# Check if ansible-pull is already running
+if pgrep -f ansible-pull > /dev/null; then
+    log_message "ERROR: ansible-pull is already running. Exiting."
+    exit 1
+fi
+
+# Parse command line arguments
+TAGS=""
+if [ -n "$1" ]; then
+    TAGS="--tags $1"
+    log_message "Running with tags: $1"
+else
+    log_message "Running full provisioning"
+fi
+
+# Set ANSIBLE_CONFIG so ansible finds config in the subdirectory
+export ANSIBLE_CONFIG="$ANSIBLE_DIR/ansible.cfg"
+
+# Run ansible-pull
+log_message "Starting ansible-pull from $REPO (branch: $BRANCH)"
+
+PULL_CMD="ansible-pull \
+    -U $REPO \
+    -C $BRANCH \
+    -i $ANSIBLE_DIR/hosts \
+    $VAULT_OPTS \
+    $EXTRA_OPTS \
+    $TAGS \
+    $ANSIBLE_DIR/local.yml"
+
+if [ "$USER" = "$ANSIBLE_USER" ]; then
+    # Running as ansible user directly
+    $PRECMD $PULL_CMD 2>&1 | tee -a "$LOGFILE"
+else
+    # Running as different user, switch to ansible user
+    $PRECMD sudo -H -u "$ANSIBLE_USER" $PULL_CMD 2>&1 | tee -a "$LOGFILE"
+fi
+
+EXIT_CODE=${PIPESTATUS[0]}
+
+if [ $EXIT_CODE -eq 0 ]; then
+    log_message "ansible-pull completed successfully"
+    {% if ansible_pull_healthcheck_url is defined and ansible_pull_healthcheck_url %}
+    # Send healthcheck ping
+    curl -fsS --retry 3 "{{ ansible_pull_healthcheck_url }}" > /dev/null 2>&1 || true
+    {% endif %}
+else
+    log_message "ERROR: ansible-pull failed with exit code $EXIT_CODE"
+fi
+
+exit $EXIT_CODE
