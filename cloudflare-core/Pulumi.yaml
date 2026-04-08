@@ -1,0 +1,12 @@
+name: cloudflare-core
+runtime:
+  name: nodejs
+  options:
+    packagemanager: yarn
+description: >-
+  Core Cloudflare infrastructure: DNS zones for multiple domains,
+  Zero Trust access control, and routing rules.
+config:
+  pulumi:tags:
+    value:
+      pulumi:template: cloudflare-typescript
