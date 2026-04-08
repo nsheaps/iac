@@ -5,7 +5,7 @@ runtime:
     packagemanager: yarn
 description: >-
   Cloudflare infrastructure for nsheaps org: R2 state bucket, DNS zone
-  (nsheaps.dev), CORS proxy worker, and app domain records.
+  (nsheaps.dev), CORS proxy worker, AI Gateway, and app domain records.
 config:
   pulumi:tags:
     value:
