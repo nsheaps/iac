@@ -1,0 +1,63 @@
+config:
+  # ---------------------------------------------------------------------------
+  # Domains managed by this stack.
+  #
+  # registrar: 'cloudflare' — domain purchased via Cloudflare Registrar
+  # registrar: 'external'   — domain purchased elsewhere, DNS on Cloudflare
+  #
+  # Zone management is identical for both; the field is informational.
+  # For existing zones, import first:
+  #   bin/pulumi-wrapper.sh -C cloudflare-core import \
+  #     cloudflare:index/zone:Zone <resource-name> <zone-id> --stack prod
+  # ---------------------------------------------------------------------------
+  cloudflare-core:domains:
+    - name: nsheaps.dev
+      registrar: cloudflare
+    # - name: example.com
+    #   registrar: external
+
+  # ---------------------------------------------------------------------------
+  # DNS records per domain.
+  # Proxied defaults to true. Set proxied: false and ttl for unproxied records.
+  # ---------------------------------------------------------------------------
+  cloudflare-core:dnsRecords:
+    nsheaps.dev:
+      - name: private-pages
+        type: CNAME
+        content: nsheaps.github.io
+        proxied: true
+      - name: cept
+        type: CNAME
+        content: nsheaps.github.io
+        proxied: true
+      - name: auth
+        type: CNAME
+        content: nsheaps-cors-proxy.workers.dev
+        proxied: true
+
+  # ---------------------------------------------------------------------------
+  # Zero Trust — email allow-list for Access.
+  # ---------------------------------------------------------------------------
+  cloudflare-core:zeroTrustAllowedEmails: []
+
+  # ---------------------------------------------------------------------------
+  # Zero Trust — applications protected by Access.
+  # Each entry creates an Access Application + Allow policy.
+  # ---------------------------------------------------------------------------
+  cloudflare-core:accessApps: []
+  # Example:
+  # cloudflare-core:accessApps:
+  #   - name: Internal Dashboard
+  #     domain: dashboard.nsheaps.dev
+
+  # ---------------------------------------------------------------------------
+  # Routing rules per domain (modern Rulesets API, replaces Page Rules).
+  # ---------------------------------------------------------------------------
+  cloudflare-core:routingRules: {}
+  # Example:
+  # cloudflare-core:routingRules:
+  #   nsheaps.dev:
+  #     - description: Redirect www to apex
+  #       sourceUrl: https://www.nsheaps.dev/*
+  #       targetUrl: https://nsheaps.dev/${1}
+  #       statusCode: 301
