@@ -1,0 +1,28 @@
+---
+- name: Ensure HandleLidSwitchExternalPower=ignore in /etc/systemd/logind.conf
+  register: changed_lines
+  lineinfile:
+    path: /etc/systemd/logind.conf
+    state: present
+    # regex101 tests: https://regex101.com/r/yptXXj/1
+    regexp: '^#?\s*HandleLidSwitchExternalPower=.*$'
+    # options are ignore hibernate suspend poweroff reboot
+    line: 'HandleLidSwitchExternalPower=ignore'
+  become: true
+- name: 'notify "Power options configured by ansible"'
+  shell: |
+    notify-send-all -t 100 "YOU WILL BE LOGGED OUT IN 10s" "Power options reconfigured by ansible. Device will now remain on when plugged in, even if lid is closed."
+  when: changed_lines.changed
+- name: sleep for 15s
+  pause:
+    seconds: 15
+  when: changed_lines.changed
+- name: Restart systemd-logind, but only if the line was changed
+  service:
+    name: systemd-logind
+    state: restarted
+  become: true
+  when: changed_lines.changed
+# - name: notify "Power options NOT configured by ansible"
+#   shell: notify-send-all -t 100 "No changes were made to power settings" "systemd-logind was not restarted."
+#   when: not changed_lines.changed

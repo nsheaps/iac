@@ -1,0 +1,17 @@
+---
+# Generate and install the provision script
+
+- name: ansible-pull | provision script | generate from template
+  template:
+    src: provision.sh.j2
+    dest: /usr/local/bin/ansible-provision
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: ansible-pull | provision script | create symlink for backward compatibility
+  file:
+    src: /usr/local/bin/ansible-provision
+    dest: /usr/local/bin/provision
+    state: link
+    force: yes

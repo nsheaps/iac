@@ -1,0 +1,5 @@
+---
+# n8laptop configuration (Linux laptop)
+
+ansible_pull_enabled: true
+ansible_pull_cron_minute: '*/30'

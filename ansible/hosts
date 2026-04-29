@@ -1,0 +1,18 @@
+# Host inventory
+# Hosts are grouped by both purpose and OS family.
+
+[laptop]
+n8laptop
+n8work
+
+[htpc]
+n8htpc-wsl
+
+[linux]
+n8laptop
+
+[macos]
+n8work
+
+[wsl]
+n8htpc-wsl

@@ -1,0 +1,16 @@
+---
+# Send notification on WSL using powershell.exe toast notifications
+
+- name: Send WSL notification via PowerShell
+  command: >
+    powershell.exe -Command "
+    [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] > $null;
+    $template = [Windows.UI.Notifications.ToastNotificationManager]::GetTemplateContent([Windows.UI.Notifications.ToastTemplateType]::ToastText02);
+    $textNodes = $template.GetElementsByTagName('text');
+    $textNodes.Item(0).AppendChild($template.CreateTextNode('Ansible Updated')) > $null;
+    $textNodes.Item(1).AppendChild($template.CreateTextNode('Updated to {{ version_label }}')) > $null;
+    $toast = [Windows.UI.Notifications.ToastNotification]::new($template);
+    [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier('Ansible').Show($toast);
+    "
+  changed_when: false
+  failed_when: false
